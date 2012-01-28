@@ -10,7 +10,7 @@
 		3EBA9CB114D493C90007F8EA /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBA9CB014D493C90007F8EA /* GameKit.framework */; };
 		FF2789B914D447C700BFF611 /* Shot.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789B814D447C700BFF611 /* Shot.m */; };
 		FF2789BC14D44B9C00BFF611 /* Explosion.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789BB14D44B9C00BFF611 /* Explosion.m */; };
-		FF5620AE14D4AA060026233E /* testmap5.json in Resources */ = {isa = PBXBuildFile; fileRef = FF5620AD14D4AA060026233E /* testmap5.json */; };
+		FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */ = {isa = PBXBuildFile; fileRef = FF4F619B14D4B434009A7F60 /* testmap5.json */; };
 		FF5620B114D4ACF70026233E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FF5620B014D4ACF70026233E /* Icon.png */; };
 		FF5620B314D4ACFC0026233E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FF5620B214D4ACFC0026233E /* Icon@2x.png */; };
 		FF66C28214D4236B0067D377 /* Tank.m in Sources */ = {isa = PBXBuildFile; fileRef = FF66C28114D4236B0067D377 /* Tank.m */; };
@@ -50,7 +50,7 @@
 		FF2789B814D447C700BFF611 /* Shot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shot.m; sourceTree = "<group>"; };
 		FF2789BA14D44B9C00BFF611 /* Explosion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Explosion.h; sourceTree = "<group>"; };
 		FF2789BB14D44B9C00BFF611 /* Explosion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Explosion.m; sourceTree = "<group>"; };
-		FF5620AD14D4AA060026233E /* testmap5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testmap5.json; sourceTree = "<group>"; };
+		FF4F619B14D4B434009A7F60 /* testmap5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testmap5.json; sourceTree = "<group>"; };
 		FF5620B014D4ACF70026233E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		FF5620B214D4ACFC0026233E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		FF66C28014D4236B0067D377 /* Tank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tank.h; sourceTree = "<group>"; };
@@ -175,7 +175,7 @@
 				FFE3845014D4A73700E62A2F /* tilesettest5.png */,
 				FFE3844B14D4A28200E62A2F /* meinpanzer_start.png */,
 				FFE3845414D4A93300E62A2F /* arenastyle.json */,
-				FF5620AD14D4AA060026233E /* testmap5.json */,
+				FF4F619B14D4B434009A7F60 /* testmap5.json */,
 			);
 			path = TankTest;
 			sourceTree = "<group>";
@@ -277,9 +277,9 @@
 				FFE3844F14D4A28A00E62A2F /* Default.png in Resources */,
 				FFE3845114D4A73700E62A2F /* tilesettest5.png in Resources */,
 				FFE3845514D4A93300E62A2F /* arenastyle.json in Resources */,
-				FF5620AE14D4AA060026233E /* testmap5.json in Resources */,
 				FF5620B114D4ACF70026233E /* Icon.png in Resources */,
 				FF5620B314D4ACFC0026233E /* Icon@2x.png in Resources */,
+				FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,13 +368,13 @@
 		FFF7A06814D40FAC005D4DB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Willi Wu (P5EC6B73UQ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ulrik Damm (X45AYMDB46)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TankTest/TankTest-Prefix.pch";
 				INFOPLIST_FILE = "TankTest/TankTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "39F7E536-D24A-44DC-AF08-01AFBFA58783";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81E664AA-341E-4B4E-8CC5-0CB2529339FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

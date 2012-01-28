@@ -167,7 +167,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	self.skView.shader = self.shader;
 	
 	self.texture = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"tileset.png"]];
-	self.tileMap = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"tilesettest5.png"]];
+	self.tileMap = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"testmap5.png"]];
 	
 	[self.skView setSpriteGroup:@"sprites"];
 	
