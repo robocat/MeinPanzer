@@ -1,0 +1,384 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FF2789B914D447C700BFF611 /* Shot.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789B814D447C700BFF611 /* Shot.m */; };
+		FF2789BC14D44B9C00BFF611 /* Explosion.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789BB14D44B9C00BFF611 /* Explosion.m */; };
+		FF66C28214D4236B0067D377 /* Tank.m in Sources */ = {isa = PBXBuildFile; fileRef = FF66C28114D4236B0067D377 /* Tank.m */; };
+		FF66C28414D42ECE0067D377 /* tilemap.json in Resources */ = {isa = PBXBuildFile; fileRef = FF66C28314D42ECE0067D377 /* tilemap.json */; };
+		FF66C28614D430310067D377 /* tileset6.png in Resources */ = {isa = PBXBuildFile; fileRef = FF66C28514D430310067D377 /* tileset6.png */; };
+		FFE3844514D482F800E62A2F /* Pickup.m in Sources */ = {isa = PBXBuildFile; fileRef = FFE3844414D482F800E62A2F /* Pickup.m */; };
+		FFE415A814D4383100EE9710 /* testmap40x40.json in Resources */ = {isa = PBXBuildFile; fileRef = FFE415A714D4383100EE9710 /* testmap40x40.json */; };
+		FFF7A05414D40FAC005D4DB4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A05314D40FAC005D4DB4 /* UIKit.framework */; };
+		FFF7A05614D40FAC005D4DB4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A05514D40FAC005D4DB4 /* Foundation.framework */; };
+		FFF7A05814D40FAC005D4DB4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A05714D40FAC005D4DB4 /* CoreGraphics.framework */; };
+		FFF7A05E14D40FAC005D4DB4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A05C14D40FAC005D4DB4 /* InfoPlist.strings */; };
+		FFF7A06014D40FAC005D4DB4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A05F14D40FAC005D4DB4 /* main.m */; };
+		FFF7A06414D40FAC005D4DB4 /* tankAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A06314D40FAC005D4DB4 /* tankAppDelegate.m */; };
+		FFF7A08614D4103B005D4DB4 /* mainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A08414D4103B005D4DB4 /* mainViewController.m */; };
+		FFF7A08714D4103B005D4DB4 /* mainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A08514D4103B005D4DB4 /* mainViewController.xib */; };
+		FFF7A08B14D411C7005D4DB4 /* tileset.png in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A08A14D411C6005D4DB4 /* tileset.png */; };
+		FFF7A08D14D41266005D4DB4 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A08C14D41266005D4DB4 /* OpenGLES.framework */; };
+		FFF7A08F14D41269005D4DB4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A08E14D41269005D4DB4 /* QuartzCore.framework */; };
+		FFF7A09014D41304005D4DB4 /* SKView.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A07614D41019005D4DB4 /* SKView.m */; };
+		FFF7A09114D41305005D4DB4 /* SKShader.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A07A14D41019005D4DB4 /* SKShader.m */; };
+		FFF7A09214D41307005D4DB4 /* SKMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A07C14D41019005D4DB4 /* SKMatrix.c */; };
+		FFF7A09314D41308005D4DB4 /* SKTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A07E14D41019005D4DB4 /* SKTexture.m */; };
+		FFF7A09414D41309005D4DB4 /* SKSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A08014D41019005D4DB4 /* SKSprite.m */; };
+		FFF7A09514D4130A005D4DB4 /* SKMap.m in Sources */ = {isa = PBXBuildFile; fileRef = FFF7A08214D41019005D4DB4 /* SKMap.m */; };
+		FFF7A09614D41361005D4DB4 /* fragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A07814D41019005D4DB4 /* fragmentShader.glsl */; };
+		FFF7A09714D41364005D4DB4 /* vertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A07714D41019005D4DB4 /* vertexShader.glsl */; };
+		FFF7A09B14D42016005D4DB4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FF2789B714D447C700BFF611 /* Shot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shot.h; sourceTree = "<group>"; };
+		FF2789B814D447C700BFF611 /* Shot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shot.m; sourceTree = "<group>"; };
+		FF2789BA14D44B9C00BFF611 /* Explosion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Explosion.h; sourceTree = "<group>"; };
+		FF2789BB14D44B9C00BFF611 /* Explosion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Explosion.m; sourceTree = "<group>"; };
+		FF66C28014D4236B0067D377 /* Tank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tank.h; sourceTree = "<group>"; };
+		FF66C28114D4236B0067D377 /* Tank.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tank.m; sourceTree = "<group>"; };
+		FF66C28314D42ECE0067D377 /* tilemap.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = tilemap.json; sourceTree = "<group>"; };
+		FF66C28514D430310067D377 /* tileset6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileset6.png; sourceTree = "<group>"; };
+		FFE3844314D482F800E62A2F /* Pickup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pickup.h; sourceTree = "<group>"; };
+		FFE3844414D482F800E62A2F /* Pickup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pickup.m; sourceTree = "<group>"; };
+		FFE415A714D4383100EE9710 /* testmap40x40.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testmap40x40.json; sourceTree = "<group>"; };
+		FFF7A04F14D40FAC005D4DB4 /* TankTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TankTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FFF7A05314D40FAC005D4DB4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FFF7A05514D40FAC005D4DB4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FFF7A05714D40FAC005D4DB4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FFF7A05B14D40FAC005D4DB4 /* TankTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TankTest-Info.plist"; sourceTree = "<group>"; };
+		FFF7A05D14D40FAC005D4DB4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FFF7A05F14D40FAC005D4DB4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FFF7A06114D40FAC005D4DB4 /* TankTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TankTest-Prefix.pch"; sourceTree = "<group>"; };
+		FFF7A06214D40FAC005D4DB4 /* tankAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tankAppDelegate.h; sourceTree = "<group>"; };
+		FFF7A06314D40FAC005D4DB4 /* tankAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tankAppDelegate.m; sourceTree = "<group>"; };
+		FFF7A07414D41019005D4DB4 /* SpriteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteKit.h; sourceTree = "<group>"; };
+		FFF7A07514D41019005D4DB4 /* SKView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKView.h; sourceTree = "<group>"; };
+		FFF7A07614D41019005D4DB4 /* SKView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKView.m; sourceTree = "<group>"; };
+		FFF7A07714D41019005D4DB4 /* vertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = vertexShader.glsl; sourceTree = "<group>"; };
+		FFF7A07814D41019005D4DB4 /* fragmentShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = fragmentShader.glsl; sourceTree = "<group>"; };
+		FFF7A07914D41019005D4DB4 /* SKShader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKShader.h; sourceTree = "<group>"; };
+		FFF7A07A14D41019005D4DB4 /* SKShader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKShader.m; sourceTree = "<group>"; };
+		FFF7A07B14D41019005D4DB4 /* SKMatrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMatrix.h; sourceTree = "<group>"; };
+		FFF7A07C14D41019005D4DB4 /* SKMatrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SKMatrix.c; sourceTree = "<group>"; };
+		FFF7A07D14D41019005D4DB4 /* SKTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKTexture.h; sourceTree = "<group>"; };
+		FFF7A07E14D41019005D4DB4 /* SKTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKTexture.m; sourceTree = "<group>"; };
+		FFF7A07F14D41019005D4DB4 /* SKSprite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKSprite.h; sourceTree = "<group>"; };
+		FFF7A08014D41019005D4DB4 /* SKSprite.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKSprite.m; sourceTree = "<group>"; };
+		FFF7A08114D41019005D4DB4 /* SKMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMap.h; sourceTree = "<group>"; };
+		FFF7A08214D41019005D4DB4 /* SKMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKMap.m; sourceTree = "<group>"; };
+		FFF7A08314D4103B005D4DB4 /* mainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainViewController.h; sourceTree = "<group>"; };
+		FFF7A08414D4103B005D4DB4 /* mainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainViewController.m; sourceTree = "<group>"; };
+		FFF7A08514D4103B005D4DB4 /* mainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = mainViewController.xib; sourceTree = "<group>"; };
+		FFF7A08A14D411C6005D4DB4 /* tileset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileset.png; sourceTree = "<group>"; };
+		FFF7A08C14D41266005D4DB4 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		FFF7A08E14D41269005D4DB4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FFF7A04C14D40FAC005D4DB4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFF7A09B14D42016005D4DB4 /* CoreMotion.framework in Frameworks */,
+				FFF7A08F14D41269005D4DB4 /* QuartzCore.framework in Frameworks */,
+				FFF7A08D14D41266005D4DB4 /* OpenGLES.framework in Frameworks */,
+				FFF7A05414D40FAC005D4DB4 /* UIKit.framework in Frameworks */,
+				FFF7A05614D40FAC005D4DB4 /* Foundation.framework in Frameworks */,
+				FFF7A05814D40FAC005D4DB4 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FFF7A04414D40FAC005D4DB4 = {
+			isa = PBXGroup;
+			children = (
+				FFF7A05914D40FAC005D4DB4 /* TankTest */,
+				FFF7A05214D40FAC005D4DB4 /* Frameworks */,
+				FFF7A05014D40FAC005D4DB4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FFF7A05014D40FAC005D4DB4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FFF7A04F14D40FAC005D4DB4 /* TankTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FFF7A05214D40FAC005D4DB4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */,
+				FFF7A08E14D41269005D4DB4 /* QuartzCore.framework */,
+				FFF7A08C14D41266005D4DB4 /* OpenGLES.framework */,
+				FFF7A05314D40FAC005D4DB4 /* UIKit.framework */,
+				FFF7A05514D40FAC005D4DB4 /* Foundation.framework */,
+				FFF7A05714D40FAC005D4DB4 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FFF7A05914D40FAC005D4DB4 /* TankTest */ = {
+			isa = PBXGroup;
+			children = (
+				FFF7A07314D41006005D4DB4 /* SpriteKit */,
+				FFF7A06214D40FAC005D4DB4 /* tankAppDelegate.h */,
+				FFF7A06314D40FAC005D4DB4 /* tankAppDelegate.m */,
+				FFF7A05A14D40FAC005D4DB4 /* Supporting Files */,
+				FFF7A08314D4103B005D4DB4 /* mainViewController.h */,
+				FFF7A08414D4103B005D4DB4 /* mainViewController.m */,
+				FFF7A08514D4103B005D4DB4 /* mainViewController.xib */,
+				FF66C28514D430310067D377 /* tileset6.png */,
+				FFF7A08A14D411C6005D4DB4 /* tileset.png */,
+				FF66C28014D4236B0067D377 /* Tank.h */,
+				FF66C28114D4236B0067D377 /* Tank.m */,
+				FF66C28314D42ECE0067D377 /* tilemap.json */,
+				FFE415A714D4383100EE9710 /* testmap40x40.json */,
+				FF2789B714D447C700BFF611 /* Shot.h */,
+				FF2789B814D447C700BFF611 /* Shot.m */,
+				FF2789BA14D44B9C00BFF611 /* Explosion.h */,
+				FF2789BB14D44B9C00BFF611 /* Explosion.m */,
+				FFE3844314D482F800E62A2F /* Pickup.h */,
+				FFE3844414D482F800E62A2F /* Pickup.m */,
+			);
+			path = TankTest;
+			sourceTree = "<group>";
+		};
+		FFF7A05A14D40FAC005D4DB4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FFF7A05B14D40FAC005D4DB4 /* TankTest-Info.plist */,
+				FFF7A05C14D40FAC005D4DB4 /* InfoPlist.strings */,
+				FFF7A05F14D40FAC005D4DB4 /* main.m */,
+				FFF7A06114D40FAC005D4DB4 /* TankTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FFF7A07314D41006005D4DB4 /* SpriteKit */ = {
+			isa = PBXGroup;
+			children = (
+				FFF7A07414D41019005D4DB4 /* SpriteKit.h */,
+				FFF7A07514D41019005D4DB4 /* SKView.h */,
+				FFF7A07614D41019005D4DB4 /* SKView.m */,
+				FFF7A07714D41019005D4DB4 /* vertexShader.glsl */,
+				FFF7A07814D41019005D4DB4 /* fragmentShader.glsl */,
+				FFF7A07914D41019005D4DB4 /* SKShader.h */,
+				FFF7A07A14D41019005D4DB4 /* SKShader.m */,
+				FFF7A07B14D41019005D4DB4 /* SKMatrix.h */,
+				FFF7A07C14D41019005D4DB4 /* SKMatrix.c */,
+				FFF7A07D14D41019005D4DB4 /* SKTexture.h */,
+				FFF7A07E14D41019005D4DB4 /* SKTexture.m */,
+				FFF7A07F14D41019005D4DB4 /* SKSprite.h */,
+				FFF7A08014D41019005D4DB4 /* SKSprite.m */,
+				FFF7A08114D41019005D4DB4 /* SKMap.h */,
+				FFF7A08214D41019005D4DB4 /* SKMap.m */,
+			);
+			name = SpriteKit;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FFF7A04E14D40FAC005D4DB4 /* TankTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFF7A06714D40FAC005D4DB4 /* Build configuration list for PBXNativeTarget "TankTest" */;
+			buildPhases = (
+				FFF7A04B14D40FAC005D4DB4 /* Sources */,
+				FFF7A04C14D40FAC005D4DB4 /* Frameworks */,
+				FFF7A04D14D40FAC005D4DB4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TankTest;
+			productName = TankTest;
+			productReference = FFF7A04F14D40FAC005D4DB4 /* TankTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FFF7A04614D40FAC005D4DB4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = tank;
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = Gereen.dk;
+			};
+			buildConfigurationList = FFF7A04914D40FAC005D4DB4 /* Build configuration list for PBXProject "TankTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FFF7A04414D40FAC005D4DB4;
+			productRefGroup = FFF7A05014D40FAC005D4DB4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FFF7A04E14D40FAC005D4DB4 /* TankTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FFF7A04D14D40FAC005D4DB4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFF7A09614D41361005D4DB4 /* fragmentShader.glsl in Resources */,
+				FFF7A05E14D40FAC005D4DB4 /* InfoPlist.strings in Resources */,
+				FFF7A09714D41364005D4DB4 /* vertexShader.glsl in Resources */,
+				FFF7A08714D4103B005D4DB4 /* mainViewController.xib in Resources */,
+				FFF7A08B14D411C7005D4DB4 /* tileset.png in Resources */,
+				FF66C28414D42ECE0067D377 /* tilemap.json in Resources */,
+				FF66C28614D430310067D377 /* tileset6.png in Resources */,
+				FFE415A814D4383100EE9710 /* testmap40x40.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FFF7A04B14D40FAC005D4DB4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFF7A06014D40FAC005D4DB4 /* main.m in Sources */,
+				FFF7A09014D41304005D4DB4 /* SKView.m in Sources */,
+				FFF7A09114D41305005D4DB4 /* SKShader.m in Sources */,
+				FFF7A09414D41309005D4DB4 /* SKSprite.m in Sources */,
+				FFF7A09514D4130A005D4DB4 /* SKMap.m in Sources */,
+				FFF7A09214D41307005D4DB4 /* SKMatrix.c in Sources */,
+				FFF7A09314D41308005D4DB4 /* SKTexture.m in Sources */,
+				FFF7A06414D40FAC005D4DB4 /* tankAppDelegate.m in Sources */,
+				FFF7A08614D4103B005D4DB4 /* mainViewController.m in Sources */,
+				FF66C28214D4236B0067D377 /* Tank.m in Sources */,
+				FF2789B914D447C700BFF611 /* Shot.m in Sources */,
+				FF2789BC14D44B9C00BFF611 /* Explosion.m in Sources */,
+				FFE3844514D482F800E62A2F /* Pickup.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FFF7A05C14D40FAC005D4DB4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FFF7A05D14D40FAC005D4DB4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FFF7A06514D40FAC005D4DB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FFF7A06614D40FAC005D4DB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FFF7A06814D40FAC005D4DB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TankTest/TankTest-Prefix.pch";
+				INFOPLIST_FILE = "TankTest/TankTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FFF7A06914D40FAC005D4DB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TankTest/TankTest-Prefix.pch";
+				INFOPLIST_FILE = "TankTest/TankTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FFF7A04914D40FAC005D4DB4 /* Build configuration list for PBXProject "TankTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFF7A06514D40FAC005D4DB4 /* Debug */,
+				FFF7A06614D40FAC005D4DB4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FFF7A06714D40FAC005D4DB4 /* Build configuration list for PBXNativeTarget "TankTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFF7A06814D40FAC005D4DB4 /* Debug */,
+				FFF7A06914D40FAC005D4DB4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FFF7A04614D40FAC005D4DB4 /* Project object */;
+}
