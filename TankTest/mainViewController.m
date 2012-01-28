@@ -209,6 +209,7 @@
 	muzzle.alpha = YES;
 	muzzle.anchor = CGPointMake(-32, -32);
 	muzzle.rotation = self.tank.rotation;
+	muzzle.zpos = 3;
 	
 	[self.skView addSprite:muzzle];
 	
