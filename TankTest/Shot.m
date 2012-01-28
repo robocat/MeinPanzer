@@ -40,7 +40,7 @@
 							 CGRectMake(i * 64, j * 64, 64, 64))) {
 		int tile = [[map objectAtIndex:i + j * mapwidth] intValue];
 		
-		if (tile == 1 || tile == 5) {
+		if (tile == 29 || tile == 15) {
 			[self.delegate explode:self on:CGPointMake(i, j)];
 			return NO;
 		}

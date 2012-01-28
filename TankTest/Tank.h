@@ -27,5 +27,6 @@
 @property (assign, nonatomic) CGRect bounds;
 @property (assign, nonatomic) id<TankDelegate> delegate;
 @property (assign, nonatomic) int level;
+@property (assign, nonatomic) int health;
 
 @end

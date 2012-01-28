@@ -17,7 +17,7 @@
 #import "Explosion.h"
 #import "Pickup.h"
 
-@interface mainViewController () <UIAccelerometerDelegate, TankDelegate>
+@interface mainViewController () <UIAccelerometerDelegate, TankDelegate, ExplosionDelegate>
 
 @property (strong, nonatomic) SKView *skView;
 @property (strong, nonatomic) SKShader *shader;
@@ -70,11 +70,11 @@
 	self.skView.shader = self.shader;
 	
 	self.texture = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"tileset.png"]];
-	self.tileMap = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"tileset6.png"]];
+	self.tileMap = [[SKTexture alloc] initWithImage:[UIImage imageNamed:@"tilesettest5.png"]];
 	
 	[self.skView setSpriteGroup:@"sprites"];
 	
-	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testmap40x40" ofType:@"json"] options:0 error:nil];
+	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"arenastyle" ofType:@"json"] options:0 error:nil];
 	NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:levelData options:0 error:nil];
 	NSDictionary *layer = [[dict valueForKey:@"layers"] objectAtIndex:0];
 	NSMutableArray *data = [[layer valueForKey:@"data"] mutableCopy];
@@ -94,8 +94,8 @@
 			grass.size = CGSizeMake(64, 64);
 			
 			int tile = [[data objectAtIndex:i + j * width] intValue] - 1;
-			int x = tile % 2;
-			int y = tile / 2;
+			int x = tile % 4;
+			int y = tile / 4;
 			
 			grass.textureClip = CGRectMake(64 * x, 64 * y, 64, 64);
 			grass.anchor = CGPointMake(-32, -32);
@@ -107,7 +107,7 @@
 	}
 	
 	self.tank = [[Tank alloc] initWithTexture:self.texture shader:self.shader];
-	self.tank.position = CGPointMake(128, 256);
+	self.tank.position = CGPointMake(1024, 1024);
 	self.tank.size = CGSizeMake(64, 64);
 	self.tank.textureClip = CGRectMake(64 * 2, 0, 64, 64);
 	self.tank.anchor = CGPointMake(-32, -32);
@@ -163,7 +163,7 @@
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
 	self.tank.rotation += acceleration.y / 2;
-	self.tank.speed = -acceleration.z;
+	self.tank.speed = -acceleration.z * 2;
 }
 
 - (void)update {
@@ -229,6 +229,7 @@
 		exp.alpha = YES;
 		exp.anchor = CGPointMake(-32, -32);
 		exp.rotation = shot.rotation;
+		exp.delegate = self;
 		[self.explotions addObject:exp];
 		[self.spritesToChange addObject:exp];
 	};
@@ -261,38 +262,54 @@
 	[self.shots removeObject:shot];
 	[self.spritesToChange addObject:shot];
 	
-	void (^expl)(CGPoint pos) = ^(CGPoint pos) {
-		Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
-		exp.position = pos;
-		exp.size = CGSizeMake(128, 128);
-		exp.alpha = YES;
-		exp.anchor = CGPointMake(-16, -16);
-		exp.rotation = shot.rotation;
-		exp.zpos = 2;
-		[self.explotions addObject:exp];
-		[self.spritesToChange addObject:exp];
-	};
+	tank_.health--;
 	
-	CGPoint pos = CGPointMake(tank_.position.x + tank_.bounds.origin.x, tank_.position.y + tank_.bounds.origin.y);
+	Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
+	exp.position = shot.position;
+	exp.size = CGSizeMake(64, 64);
+	exp.alpha = YES;
+	exp.anchor = CGPointMake(-32, -32);
+	exp.rotation = shot.rotation;
+	exp.zpos = 2;
+	exp.delegate = self;
+	[self.explotions addObject:exp];
+	[self.spritesToChange addObject:exp];
 	
-	expl(CGPointMake(pos.x - 16, pos.y - 16));
-	expl(CGPointMake(pos.x - 16, pos.y + 16));
-	expl(CGPointMake(pos.x + 16, pos.y - 16));
-	expl(CGPointMake(pos.x + 16, pos.y + 16));
-	expl(CGPointMake(pos.x, pos.y));
-	
-	[self.tanks removeObject:tank_];
-	[self.spritesToChange addObject:tank_];
-	
-	Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
-	hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
-	hitlerkage.size = CGSizeMake(64, 64);
-	hitlerkage.position = tank_.position;
-	hitlerkage.anchor = CGPointMake(-32, -32);
-	hitlerkage.alpha = YES;
-	
-	[self.pickups addObject:hitlerkage];
-	[self.spritesToChange addObject:hitlerkage];
+	if (tank_.health <= 0) {
+		void (^expl)(CGPoint pos) = ^(CGPoint pos) {
+			Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
+			exp.position = pos;
+			exp.size = CGSizeMake(128, 128);
+			exp.alpha = YES;
+			exp.anchor = CGPointMake(-16, -16);
+			exp.rotation = shot.rotation;
+			exp.zpos = 2;
+			exp.delegate = self;
+			[self.explotions addObject:exp];
+			[self.spritesToChange addObject:exp];
+		};
+		
+		CGPoint pos = CGPointMake(tank_.position.x + tank_.bounds.origin.x, tank_.position.y + tank_.bounds.origin.y);
+		
+		expl(CGPointMake(pos.x - 16, pos.y - 16));
+		expl(CGPointMake(pos.x - 16, pos.y + 16));
+		expl(CGPointMake(pos.x + 16, pos.y - 16));
+		expl(CGPointMake(pos.x + 16, pos.y + 16));
+		expl(CGPointMake(pos.x, pos.y));
+		
+		[self.tanks removeObject:tank_];
+		[self.spritesToChange addObject:tank_];
+		
+		Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
+		hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
+		hitlerkage.size = CGSizeMake(64, 64);
+		hitlerkage.position = tank_.position;
+		hitlerkage.anchor = CGPointMake(-32, -32);
+		hitlerkage.alpha = YES;
+		
+		[self.pickups addObject:hitlerkage];
+		[self.spritesToChange addObject:hitlerkage];
+	}
 }
 
 - (void)tankMoved:(Tank *)tank_ {
@@ -308,6 +325,10 @@
 			break;
 		}
 	}
+}
+
+- (void)explosionDone:(Explosion *)exp {
+	[self.spritesToChange addObject:exp];
 }
 
 - (void)viewDidUnload {

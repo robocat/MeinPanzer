@@ -17,6 +17,15 @@
 @synthesize bounds;
 @synthesize delegate;
 @synthesize level;
+@synthesize health;
+
+- (id)initWithTexture:(SKTexture *)texture shader:(SKShader *)shader {
+	if (self = [super initWithTexture:texture shader:shader]) {
+		health = 10;
+	}
+	
+	return self;
+}
 
 - (BOOL)update {
 	CGFloat speednew = self.speed;
@@ -34,7 +43,7 @@
 									 CGRectMake(i * 64, j * 64, 64, 64))) {
 				int tile = [[map objectAtIndex:i + j * mapwidth] intValue];
 				
-				if (tile == 1 || tile == 3 || tile == 5) {
+				if (tile == 29 || tile == 1 || tile == 15) {
 					self.position = CGPointMake(self.position.x - cos(rotationnow) * speednew, self.position.y - sin(rotationnow) * speednew);
 					goto end;
 				}

@@ -17,10 +17,11 @@
 @implementation Explosion
 
 @synthesize spritestate;
+@synthesize delegate;
 
 - (BOOL)update {
 	if (spritestate >= 4) {
-		self.visible = NO;
+		[self.delegate explosionDone:self];
 	}
 	
 	self.textureClip = CGRectMake((spritestate % 2) * 64, (spritestate / 2) * 64, 64, 64);
