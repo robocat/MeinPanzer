@@ -82,11 +82,18 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (nonatomic) NSInteger gameUniqueID;
 
 
+
+
+- (void)shootFromTank:(Tank*)t;
+
+
 -(void)startPicker;
 - (void)invalidateSession:(GKSession *)session;
 
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession:(GKSession *)session context:(void *)context;
 - (void)sendNetworkPacket:(GKSession *)session packetID:(int)packetID withData:(void *)data ofLength:(int)length reliable:(BOOL)reliable;
+
+
 
 @end
 
@@ -252,8 +259,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
-	self.tank.rotation += acceleration.y / 2;
-  self.tank.speed = -acceleration.z * 2;
+	self.tank.rotation += acceleration.y / 4;
+	self.tank.speed = -acceleration.z * 2;
+  
   
   if (_gameState == GameStateMultiplayer) {
     TankState ts = self.tank.state;
@@ -327,32 +335,36 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (void)tap {
+	[self shootFromTank:self.tank];
+}
+
+- (void)shootFromTank:(Tank*)t {
 	Shot *shot = [[Shot alloc] initWithTexture:self.texture shader:self.shader];
 	shot.textureClip = CGRectMake(64 * 2, 64, 64, 64);
 	shot.bounds = CGRectMake(37, 32, 8, 4);
 	shot.size = CGSizeMake(64, 64);
 	shot.alpha = YES;
 	shot.anchor = CGPointMake(-32, -32);
-	shot.rotation = self.tank.rotation;
-	shot.position = self.tank.position;
+	shot.rotation = t.rotation;
+	shot.position = t.position;
 	shot.speed = 3;
-	shot.mapwidth = self.tank.mapwidth;
-	shot.mapheight = self.tank.mapheight;
-	shot.map = self.tank.map;
+	shot.mapwidth = t.mapwidth;
+	shot.mapheight = t.mapheight;
+	shot.map = t.map;
 	shot.delegate = self;
-	shot.owner = self.tank;
+	shot.owner = t;
 	shot.tanks = self.tanks;
 	
 	[self.shots addObject:shot];
 	[self.skView addSprite:shot];
 	
 	SKSprite *muzzle = [[SKSprite alloc] initWithTexture:self.texture shader:self.shader];
-	muzzle.position = self.tank.position;
-	muzzle.textureClip = CGRectMake(64 * (self.tank.level > 3? 4: 3), 0, 64, 64);
+	muzzle.position = t.position;
+	muzzle.textureClip = CGRectMake(64 * (t.level > 3? 4: 3), 0, 64, 64);
 	muzzle.size = CGSizeMake(64, 64);
 	muzzle.alpha = YES;
 	muzzle.anchor = CGPointMake(-32, -32);
-	muzzle.rotation = self.tank.rotation;
+	muzzle.rotation = t.rotation;
 	muzzle.zpos = 3;
 	
 	[self.skView addSprite:muzzle];
