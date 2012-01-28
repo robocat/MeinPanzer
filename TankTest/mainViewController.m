@@ -84,7 +84,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 
 
-- (void)shootFromTank:(Tank*)t;
+- (Shot*)shootFromTank:(Tank*)t;
 
 
 -(void)startPicker;
@@ -343,7 +343,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self shootFromTank:self.tank];
 }
 
-- (void)shootFromTank:(Tank*)t {
+- (Shot*)shootFromTank:(Tank*)t {
 	Shot *shot = [[Shot alloc] initWithTexture:self.texture shader:self.shader];
 	shot.textureClip = CGRectMake(64 * 2, 64, 64, 64);
 	shot.bounds = CGRectMake(37, 32, 8, 4);
@@ -353,9 +353,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	shot.rotation = t.rotation;
 	shot.position = t.position;
 	shot.speed = 3;
-	shot.mapwidth = t.mapwidth;
-	shot.mapheight = t.mapheight;
-	shot.map = t.map;
+	shot.mapwidth = self.mapSize.width;
+	shot.mapheight = self.mapSize.height;
+	shot.map = self.map;
 	shot.delegate = self;
 	shot.owner = t;
 	shot.tanks = self.tanks;
@@ -377,6 +377,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.02 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		[spritesToChange addObject:muzzle];
 	});
+	
+	return shot;
 }
 
 - (void)explode:(Shot *)shot on:(CGPoint)obj {
