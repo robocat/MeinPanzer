@@ -27,5 +27,6 @@
 
 - (id)initWithTexture:(SKTexture*)texture shader:(SKShader*)shader;
 - (void)draw;
+- (BOOL)update;
 
 @end

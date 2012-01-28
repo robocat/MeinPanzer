@@ -158,6 +158,10 @@ static GLushort indicies[] = {
 	}
 }
 
+- (BOOL)update {
+	return YES;
+}
+
 - (void)dealloc {
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);

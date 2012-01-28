@@ -20,7 +20,7 @@
 
 @synthesize state = _state;
 
-- (void)draw {
+- (BOOL)update {
 	CGFloat speednew = self.speed;
 	CGFloat rotationnow = self.rotation;
 	
@@ -47,7 +47,7 @@ end:
 	
 	[self.delegate tankMoved:self];
 	
-	[super draw];
+	return YES;
 }
 
 - (void)setLevel:(int)_level {
@@ -57,6 +57,29 @@ end:
 		self.textureClip = CGRectMake(64 * 2, 0, 64, 64);
 	} else {
 		self.textureClip = CGRectMake(64 * ((level - 1) % 4), 64 * ((level - 1) / 4 + 2), 64, 64);
+	}
+	
+	switch (level) {
+		case 0:
+			self.bounds = CGRectMake(17, 23, 26, 20);
+			break;
+		case 1:
+			self.bounds = CGRectMake(15, 22, 31, 23);
+			break;
+		case 2:
+			self.bounds = CGRectMake(17, 21, 38, 26);
+			break;
+		case 3:
+			self.bounds = CGRectMake(16, 17, 45, 32);
+			break;
+		case 4:
+			self.bounds = CGRectMake(13, 15, 51, 33);
+			break;
+		case 5:
+			self.bounds = CGRectMake(14, 14, 37, 37);
+			break;
+		default:
+			break;
 	}
 }
 

@@ -18,7 +18,7 @@
 
 @synthesize spritestate;
 
-- (void)draw {
+- (BOOL)update {
 	if (spritestate >= 4) {
 		self.visible = NO;
 	}
@@ -30,6 +30,8 @@
 	if (++counter % 5 == 0) {
 		spritestate++;
 	}
+	
+	return YES;
 }
 
 @end

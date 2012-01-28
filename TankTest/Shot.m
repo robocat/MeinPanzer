@@ -20,15 +20,15 @@
 @synthesize owner;
 @synthesize tanks;
 
-- (void)draw {
+- (BOOL)update {
 	CGFloat speednew = self.speed;
 	CGFloat rotationnow = self.rotation;
 	
 	self.position = CGPointMake(self.position.x + cos(rotationnow) * speednew, self.position.y + sin(rotationnow) * speednew);
 	
-	if (self.position.x < 0 || self.position.y < 0 || self.position.x >= mapwidth * 64 || self.position.y >= mapheight * 64) {
+	if (self.position.x < 0 || self.position.y < 0 || self.position.x >= mapwidth * 63 || self.position.y >= mapheight * 63) {
 		[self.delegate explode:self on:CGPointMake(0, 0)];
-		return;
+		return NO;
 	}
 	
 	int i = (self.position.x + self.bounds.origin.x) / 64, j = (self.position.y + self.bounds.origin.y) / 64;
@@ -42,7 +42,7 @@
 		
 		if (tile == 1 || tile == 5) {
 			[self.delegate explode:self on:CGPointMake(i, j)];
-			return;
+			return NO;
 		}
 	}
 	
@@ -56,11 +56,11 @@
 											tank.bounds.size.width,
 											tank.bounds.size.height))) {
 									 [self.delegate shot:self hitTank:tank];
-									 return;
+									 return NO;
 		}
 	}
 	
-	[super draw];
+	return YES;
 }
 
 @end

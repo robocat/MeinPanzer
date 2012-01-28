@@ -96,6 +96,10 @@
 	glViewport(0, 0, self.frame.size.width, self.frame.size.height);
 	
 	for (SKSprite *sprite in [self.sprites objectForKey:group]) {
+		if (![sprite update]) {
+			continue;
+		}
+		
 		if (CGRectIntersectsRect(CGRectMake(viewpos.x, viewpos.y, self.bounds.size.width, self.bounds.size.height), CGRectMake(sprite.position.x, sprite.position.y, sprite.size.width, sprite.size.height))) {
 			[sprite draw];
 		}
