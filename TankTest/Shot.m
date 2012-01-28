@@ -47,6 +47,10 @@
 	}
 	
 	for (Tank *tank in self.tanks) {
+		if (self.owner == tank) {
+			continue;
+		}
+		
 		if (CGRectIntersectsRect(CGRectMake(self.position.x + self.bounds.origin.x,
 											self.position.y + self.bounds.origin.y,
 											self.bounds.size.width,
