@@ -17,7 +17,6 @@
 #import "Explosion.h"
 #import "Pickup.h"
 
-<<<<<<< HEAD
 #import <GameKit/GameKit.h>
 
 
@@ -56,10 +55,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 
 
-@interface mainViewController () <GKSessionDelegate, GKPeerPickerControllerDelegate, UIAccelerometerDelegate, TankDelegate>
-=======
-@interface mainViewController () <UIAccelerometerDelegate, TankDelegate, ExplosionDelegate>
->>>>>>> efb95a27349fda1d6e7e61c76ae183524b47fed2
+@interface mainViewController () <GKSessionDelegate, GKPeerPickerControllerDelegate, UIAccelerometerDelegate, TankDelegate, ExplosionDelegate>
 
 @property (strong, nonatomic) SKView *skView;
 @property (strong, nonatomic) SKShader *shader;
@@ -257,16 +253,12 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
 	self.tank.rotation += acceleration.y / 2;
-<<<<<<< HEAD
-	self.tank.speed = -acceleration.z;
+  self.tank.speed = -acceleration.z * 2;
   
   if (_gameState == GameStateMultiplayer) {
     TankState ts = self.tank.state;
     [self sendNetworkPacket:_gameSession packetID:NETWORK_MOVE_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
   }
-=======
-	self.tank.speed = -acceleration.z * 2;
->>>>>>> efb95a27349fda1d6e7e61c76ae183524b47fed2
 }
 
 - (void)update {
