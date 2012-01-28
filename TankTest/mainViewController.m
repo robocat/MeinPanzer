@@ -335,6 +335,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (void)tap {
+  if (_gameState == GameStateMultiplayer) {
+    TankState ts = self.tank.state;
+    [self sendNetworkPacket:_gameSession packetID:NETWORK_FIRE_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
+  }
+  
 	[self shootFromTank:self.tank];
 }
 
@@ -666,6 +671,16 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 //      ds->tankMissile = ts->tankMissile;
 //      ds->tankMissilePosition = ts->tankMissilePosition;
 //      ds->tankMissileDirection = ts->tankMissileDirection;
+      
+      TankState *ts = (TankState *)&incomingPacket[8];
+      
+      TankState newState;
+      newState.position = ts->position;
+      newState.rotation = ts->rotation;
+      newState.speed = ts->speed;
+      [(Tank *)[self.tanks objectAtIndex:0] setState:newState];
+      
+      [self shootFromTank:[self.tanks objectAtIndex:0]];
     }
 			break;
 		case NETWORK_HEARTBEAT:
