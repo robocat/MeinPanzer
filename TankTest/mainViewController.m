@@ -544,7 +544,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
            sessionForConnectionType:(GKPeerPickerConnectionType)type {
   
 	GKSession *session = [[GKSession alloc] initWithSessionID:kTankSessionID
-                                                displayName:@"Hitler Tank"
+                                                displayName:@"Mein Panzer"
                                                 sessionMode:GKSessionModePeer];
 	return session;
 }
@@ -682,7 +682,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       newState.speed = ts->speed;
       [(Tank *)[self.tanks objectAtIndex:0] setState:newState];
       
-      [self shootFromTank:[self.tanks objectAtIndex:0]];
+      Shot *shot = [self shootFromTank:[self.tanks objectAtIndex:0]];
+      shot.position = newState.position;
+      shot.rotation = newState.rotation;
     }
 			break;
 		case NETWORK_HEARTBEAT:
