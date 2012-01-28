@@ -17,7 +17,45 @@
 #import "Explosion.h"
 #import "Pickup.h"
 
-@interface mainViewController () <UIAccelerometerDelegate, TankDelegate>
+#import <GameKit/GameKit.h>
+
+
+
+
+typedef enum {
+	GameStateStartGame,
+	GameStatePicker,
+	GameStateMultiplayer,
+	GameStateMultiplayerCointoss,
+	GameStateMultiplayerReconnect
+} GameStates;
+
+
+typedef enum {
+	kServer,
+	kClient
+} GameNetwork;
+
+
+typedef enum {
+	NETWORK_ACK,					// no packet
+	NETWORK_COINTOSS,				// decide who is going to be the server
+	NETWORK_MOVE_EVENT,				// send position
+	NETWORK_FIRE_EVENT,				// send fire
+	NETWORK_HEARTBEAT				// send of entire state at regular intervals
+} PacketCodes;
+
+
+
+#define kTankSessionID @"hitlerTank"
+
+#define kMaxTankPacketSize 1024
+
+const float kHeartbeatTimeMaxDelay = 2.0f;
+
+
+
+@interface mainViewController () <GKSessionDelegate, GKPeerPickerControllerDelegate, UIAccelerometerDelegate, TankDelegate>
 
 @property (strong, nonatomic) SKView *skView;
 @property (strong, nonatomic) SKShader *shader;
@@ -33,9 +71,33 @@
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
 
+
+@property(nonatomic) GameStates gameState;
+@property(strong, nonatomic) GKSession *gameSession;
+@property(nonatomic) GameNetwork peerStatus;
+
+@property(copy, nonatomic)	 NSString *gamePeerId;
+@property(strong, nonatomic) NSDate *lastHeartbeatDate;
+
+@property (nonatomic) NSInteger gameUniqueID;
+
+
+-(void)startPicker;
+- (void)invalidateSession:(GKSession *)session;
+
+- (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession:(GKSession *)session context:(void *)context;
+- (void)sendNetworkPacket:(GKSession *)session packetID:(int)packetID withData:(void *)data ofLength:(int)length reliable:(BOOL)reliable;
+
 @end
 
-@implementation mainViewController
+
+
+
+
+@implementation mainViewController {
+  int gamePacketNumber;
+  TankState	tankStates[2];
+}
 
 @synthesize skView;
 @synthesize shader;
@@ -51,8 +113,37 @@
 @synthesize tanks;
 @synthesize pickups;
 
+@synthesize gameState = _gameState;
+@synthesize gameSession = _gameSession;
+
+@synthesize peerStatus = _peerStatus;
+@synthesize gamePeerId = _gamePeerId;
+@synthesize lastHeartbeatDate = _lastHeartbeatDate;
+
+@synthesize gameUniqueID = _gameUniqueID;
+
+
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
+  
+  // Game Session
+  _peerStatus = kServer;
+  gamePacketNumber = 0;
+  _gameSession = nil;
+  _gamePeerId = nil;
+  _lastHeartbeatDate = nil;
+  
+  
+  NSString *uid = [[UIDevice currentDevice] uniqueIdentifier];
+  _gameUniqueID = [uid hash];
+  
+  _gameState = GameStateStartGame;
+  
+  
+  [self startPicker];
+  
+  
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -167,6 +258,57 @@
 }
 
 - (void)update {
+  
+  static int counter = 0;
+  
+	switch (_gameState) {
+		case GameStatePicker:
+		case GameStateStartGame:
+			break;
+		case GameStateMultiplayerCointoss:
+			[self sendNetworkPacket:self.gameSession packetID:NETWORK_COINTOSS withData:&_gameUniqueID ofLength:sizeof(int) reliable:YES];
+			self.gameState = GameStateMultiplayer; // we only want to be in the cointoss state for one loop
+			break;
+		case GameStateMultiplayer:
+//			[self updateTanks];
+			counter++;
+			if(!(counter&7)) { // once every 8 updates check if we have a recent heartbeat from the other player, and send a heartbeat packet with current state
+				if(_lastHeartbeatDate == nil) {
+					// we haven't received a hearbeat yet, so set one (in case we never receive a single heartbeat)
+					_lastHeartbeatDate = [NSDate date];
+				}
+				else if(fabs([self.lastHeartbeatDate timeIntervalSinceNow]) >= kHeartbeatTimeMaxDelay) {
+          // see if the last heartbeat is too old
+          // seems we've lost connection, notify user that we are trying to reconnect (until GKSession actually disconnects)
+          
+//					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
+//					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+//					self.connectionAlert = alert;
+//					[alert show];
+          
+					self.gameState = GameStateMultiplayerReconnect;
+				}
+				
+				// send a new heartbeat to other player
+				TankState *ts = &tankStates[_peerStatus];
+				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:ts ofLength:sizeof(TankState) reliable:NO];
+			}
+			break;
+		case GameStateMultiplayerReconnect:
+			// we have lost a heartbeat for too long, so pause game and notify user while we wait for next heartbeat or session disconnect.
+			counter++;
+			if(!(counter&7)) { // keep sending heartbeats to the other player in case it returns
+				TankState *ts = &tankStates[_peerStatus];
+				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:ts ofLength:sizeof(TankState) reliable:NO];
+			}
+			break;
+		default:
+			break;
+	}
+  
+  
+  
+  
 	self.skView.viewpos = CGPointMake(self.tank.position.x - 192, self.tank.position.y - 128);
 	
 	[self.skView render];
@@ -316,5 +458,228 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
 }
+
+
+
+
+
+
+
+
+
+
+
+#pragma mark -
+#pragma mark Peer Picker Related Methods
+
+-(void)startPicker {
+	_gameState = GameStatePicker;
+	
+	GKPeerPickerController* picker = [[GKPeerPickerController alloc] init];
+  picker.delegate = self;
+	[picker show];
+}
+
+
+#pragma mark GKPeerPickerControllerDelegate Methods
+
+- (void)peerPickerControllerDidCancel:(GKPeerPickerController *)picker { 
+	picker.delegate = nil;
+	
+	// invalidate and release game session if one is around.
+	if(_gameSession != nil)	{
+		[self invalidateSession:self.gameSession];
+		_gameSession = nil;
+	}
+	
+	// go back to start mode
+	_gameState = GameStateStartGame;
+} 
+
+
+- (GKSession *)peerPickerController:(GKPeerPickerController *)picker
+           sessionForConnectionType:(GKPeerPickerConnectionType)type {
+  
+	GKSession *session = [[GKSession alloc] initWithSessionID:kTankSessionID
+                                                displayName:@"Hitler Tank"
+                                                sessionMode:GKSessionModePeer];
+	return session;
+}
+
+- (void)peerPickerController:(GKPeerPickerController *)picker didConnectPeer:(NSString *)peerID toSession:(GKSession *)session { 
+	// Remember the current peer.
+	self.gamePeerId = peerID;
+	
+	// Make sure we have a reference to the game session and it is set up
+	self.gameSession = session;
+	self.gameSession.delegate = self; 
+	[self.gameSession setDataReceiveHandler:self withContext:nil];
+	
+	// Done with the Peer Picker
+	[picker dismiss];
+	picker.delegate = nil;
+	
+	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
+	self.gameState = GameStateMultiplayerCointoss;
+}
+
+
+- (void)invalidateSession:(GKSession *)session {
+	if(session != nil) {
+		[session disconnectFromAllPeers]; 
+		session.available = NO; 
+		[session setDataReceiveHandler: nil withContext: NULL]; 
+		session.delegate = nil; 
+	}
+}
+
+
+
+#pragma mark GKSessionDelegate Methods
+
+- (void)session:(GKSession *)session
+           peer:(NSString *)peerID
+ didChangeState:(GKPeerConnectionState)state {
+  
+	if(self.gameState == GameStatePicker) {
+		return;
+	}
+	
+	if(state == GKPeerStateDisconnected) {
+//		NSString *message = [NSString stringWithFormat:@"Could not reconnect with %@.", [session displayNameForPeer:peerID]];
+//		if((self.gameState == GameStateMultiplayerReconnect) && self.connectionAlert && self.connectionAlert.visible) {
+//			self.connectionAlert.message = message;
+//		}
+//		else {
+//			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+//			self.connectionAlert = alert;
+//			[alert show];
+//			[alert release];
+//		}
+		
+		// go back to start mode
+		_gameState = GameStateStartGame;
+	}
+} 
+
+
+
+#pragma mark Data Send/Receive Methods
+
+/*
+ * Getting a data packet. This is the data receive handler method expected by the GKSession. 
+ * We set ourselves as the receive data handler in the -peerPickerController:didConnectPeer:toSession: method.
+ */
+- (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession:(GKSession *)session context:(void *)context
+{ 
+	static int lastPacketTime = -1;
+	unsigned char *incomingPacket = (unsigned char *)[data bytes];
+	int *pIntData = (int *)&incomingPacket[0];
+	//
+	// developer  check the network time and make sure packers are in order
+	//
+	int packetTime = pIntData[0];
+	int packetID = pIntData[1];
+	if(packetTime < lastPacketTime && packetID != NETWORK_COINTOSS) {
+		return;	
+	}
+	
+	lastPacketTime = packetTime;
+	switch( packetID ) {
+		case NETWORK_COINTOSS:
+    {
+      // coin toss to determine roles of the two players
+      int coinToss = pIntData[2];
+      // if other player's coin is higher than ours then that player is the server
+      if(coinToss > _gameUniqueID) {
+        self.peerStatus = kClient;
+      }
+      
+//      // notify user of tank color
+//      self.gameLabel.text = (self.peerStatus == kServer) ? kBlueLabel : kRedLabel; // server is the blue tank, client is red
+//      self.gameLabel.hidden = NO;
+//      // after 1 second fire method to hide the label
+//      [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideGameLabel:) userInfo:nil repeats:NO];
+    }
+			break;
+		case NETWORK_MOVE_EVENT:
+    {
+      // received move event from other player, update other player's position/destination info
+      TankState *ts = (TankState *)&incomingPacket[8];
+      int peer = (self.peerStatus == kServer) ? kClient : kServer;
+      TankState *ds = &tankStates[peer];
+      ds->position = ts->position;
+      ds->rotation = ts->rotation;
+      ds->speed = ts->speed;
+    }
+			break;
+		case NETWORK_FIRE_EVENT:
+    {
+      // received a missile fire event from other player, update other player's firing status
+//      TankState *ts = (TankState *)&incomingPacket[8];
+//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
+//      TankState *ds = &tankStates[peer];
+//      ds->tankMissile = ts->tankMissile;
+//      ds->tankMissilePosition = ts->tankMissilePosition;
+//      ds->tankMissileDirection = ts->tankMissileDirection;
+    }
+			break;
+		case NETWORK_HEARTBEAT:
+    {
+      // Received heartbeat data with other player's position, destination, and firing status.
+      
+      // update the other player's info from the heartbeat
+      TankState *ts = (TankState *)&incomingPacket[8];		// tank data as seen on other client
+      int peer = (self.peerStatus == kServer) ? kClient : kServer;
+      TankState *ds = &tankStates[peer];					// same tank, as we see it on this client
+      memcpy( ds, ts, sizeof(TankState) );
+      
+      // update heartbeat timestamp
+      _lastHeartbeatDate = [NSDate date];
+      
+      // if we were trying to reconnect, set the state back to multiplayer as the peer is back
+      if(self.gameState == GameStateMultiplayerReconnect) {
+//        if(self.connectionAlert && self.connectionAlert.visible) {
+//          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
+//        }
+        _gameState = GameStateMultiplayer;
+      }
+    }
+			break;
+		default:
+			// error
+			break;
+	}
+}
+
+- (void)sendNetworkPacket:(GKSession *)session packetID:(int)packetID withData:(void *)data ofLength:(int)length reliable:(BOOL)reliable
+{
+	// the packet we'll send is resued
+	static unsigned char networkPacket[kMaxTankPacketSize];
+	const unsigned int packetHeaderSize = 2 * sizeof(int); // we have two "ints" for our header
+	
+	if(length < (kMaxTankPacketSize - packetHeaderSize)) { // our networkPacket buffer size minus the size of the header info
+		int *pIntData = (int *)&networkPacket[0];
+		// header info
+		pIntData[0] = gamePacketNumber++;
+		pIntData[1] = packetID;
+		// copy data in after the header
+		memcpy( &networkPacket[packetHeaderSize], data, length ); 
+		
+		NSData *packet = [NSData dataWithBytes: networkPacket length: (length+8)];
+		if(reliable == YES) { 
+			[session sendData:packet
+                toPeers:[NSArray arrayWithObject:_gamePeerId]
+           withDataMode:GKSendDataReliable
+                  error:nil];
+		} else {
+			[session sendData:packet
+                toPeers:[NSArray arrayWithObject:_gamePeerId]
+           withDataMode:GKSendDataUnreliable
+                  error:nil];
+		}
+	}
+}
+
 
 @end

@@ -18,6 +18,8 @@
 @synthesize delegate;
 @synthesize level;
 
+@synthesize state = _state;
+
 - (void)draw {
 	CGFloat speednew = self.speed;
 	CGFloat rotationnow = self.rotation;

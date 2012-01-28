@@ -10,6 +10,14 @@
 #import "SKSprite.h"
 #import "mainViewController.h"
 
+
+typedef struct {
+	CGPoint position;
+	CGFloat rotation;
+	CGFloat speed;
+} TankState;
+
+
 @class Tank;
 
 @protocol TankDelegate <NSObject>
@@ -27,5 +35,7 @@
 @property (assign, nonatomic) CGRect bounds;
 @property (assign, nonatomic) id<TankDelegate> delegate;
 @property (assign, nonatomic) int level;
+
+@property (nonatomic) TankState state;
 
 @end
