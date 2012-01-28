@@ -83,4 +83,26 @@ end:
 	}
 }
 
+
+#pragma mark - Overwrite
+
+- (TankState)state
+{
+  TankState st;
+  st.position = self.position;
+  st.rotation = self.rotation;
+  st.speed = self.speed;
+  
+  return st;
+}
+
+- (void)setState:(TankState)state
+{
+  self.position = state.position;
+  self.rotation = state.rotation;
+  self.speed = state.speed;
+}
+
+
+
 @end

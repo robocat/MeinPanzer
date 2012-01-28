@@ -96,7 +96,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 @implementation mainViewController {
   int gamePacketNumber;
-  TankState	tankStates[2];
 }
 
 @synthesize skView;
@@ -238,15 +237,15 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	};
 	
 	addEnemy(CGPointMake(256, 256 + 64 * 0));
-	addEnemy(CGPointMake(256, 256 + 64 * 1));
-	addEnemy(CGPointMake(256, 256 + 64 * 2));
-	addEnemy(CGPointMake(256, 256 + 64 * 3));
-	addEnemy(CGPointMake(256, 256 + 64 * 4));
-	addEnemy(CGPointMake(256, 256 + 64 * 5));
-	addEnemy(CGPointMake(256, 256 + 64 * 6));
-	addEnemy(CGPointMake(256, 256 + 64 * 7));
-	addEnemy(CGPointMake(256, 256 + 64 * 8));
-	addEnemy(CGPointMake(256, 256 + 64 * 9));
+//	addEnemy(CGPointMake(256, 256 + 64 * 1));
+//	addEnemy(CGPointMake(256, 256 + 64 * 2));
+//	addEnemy(CGPointMake(256, 256 + 64 * 3));
+//	addEnemy(CGPointMake(256, 256 + 64 * 4));
+//	addEnemy(CGPointMake(256, 256 + 64 * 5));
+//	addEnemy(CGPointMake(256, 256 + 64 * 6));
+//	addEnemy(CGPointMake(256, 256 + 64 * 7));
+//	addEnemy(CGPointMake(256, 256 + 64 * 8));
+//	addEnemy(CGPointMake(256, 256 + 64 * 9));
 	
 	CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -255,6 +254,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
 	self.tank.rotation += acceleration.y / 2;
 	self.tank.speed = -acceleration.z;
+  
+  if (_gameState == GameStateMultiplayer) {
+    TankState ts = self.tank.state;
+    [self sendNetworkPacket:_gameSession packetID:NETWORK_MOVE_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
+  }
 }
 
 - (void)update {
@@ -270,7 +274,22 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			self.gameState = GameStateMultiplayer; // we only want to be in the cointoss state for one loop
 			break;
 		case GameStateMultiplayer:
-//			[self updateTanks];
+      
+      self.skView.viewpos = CGPointMake(self.tank.position.x - 192, self.tank.position.y - 128);
+      
+      [self.skView render];
+      
+      for (SKSprite *sprite in self.spritesToChange) {
+        if ([self.skView containsSprite:sprite]) {
+          [self.skView removeSprite:sprite];
+        } else {
+          [self.skView addSprite:sprite];
+        }
+      }
+      
+      [self.spritesToChange removeAllObjects];
+      
+      
 			counter++;
 			if(!(counter&7)) { // once every 8 updates check if we have a recent heartbeat from the other player, and send a heartbeat packet with current state
 				if(_lastHeartbeatDate == nil) {
@@ -290,38 +309,21 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 				}
 				
 				// send a new heartbeat to other player
-				TankState *ts = &tankStates[_peerStatus];
-				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:ts ofLength:sizeof(TankState) reliable:NO];
+				TankState ts = self.tank.state;
+				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:&ts ofLength:sizeof(TankState) reliable:NO];
 			}
 			break;
 		case GameStateMultiplayerReconnect:
 			// we have lost a heartbeat for too long, so pause game and notify user while we wait for next heartbeat or session disconnect.
 			counter++;
 			if(!(counter&7)) { // keep sending heartbeats to the other player in case it returns
-				TankState *ts = &tankStates[_peerStatus];
-				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:ts ofLength:sizeof(TankState) reliable:NO];
+				TankState ts = self.tank.state;
+				[self sendNetworkPacket:_gameSession packetID:NETWORK_HEARTBEAT withData:&ts ofLength:sizeof(TankState) reliable:NO];
 			}
 			break;
 		default:
 			break;
 	}
-  
-  
-  
-  
-	self.skView.viewpos = CGPointMake(self.tank.position.x - 192, self.tank.position.y - 128);
-	
-	[self.skView render];
-	
-	for (SKSprite *sprite in self.spritesToChange) {
-		if ([self.skView containsSprite:sprite]) {
-			[self.skView removeSprite:sprite];
-		} else {
-			[self.skView addSprite:sprite];
-		}
-	}
-	
-	[self.spritesToChange removeAllObjects];
 }
 
 - (void)tap {
@@ -607,11 +609,19 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
     {
       // received move event from other player, update other player's position/destination info
       TankState *ts = (TankState *)&incomingPacket[8];
-      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-      TankState *ds = &tankStates[peer];
-      ds->position = ts->position;
-      ds->rotation = ts->rotation;
-      ds->speed = ts->speed;
+      
+//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
+//      TankState *ds = &tankStates[peer];
+//      ds->position = ts->position;
+//      ds->rotation = ts->rotation;
+//      ds->speed = ts->speed;
+      
+      TankState newState;
+      newState.position = ts->position;
+      newState.rotation = ts->rotation;
+      newState.speed = ts->speed;
+      [(Tank *)[self.tanks objectAtIndex:0] setState:newState];
+      
     }
 			break;
 		case NETWORK_FIRE_EVENT:
@@ -630,10 +640,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       // Received heartbeat data with other player's position, destination, and firing status.
       
       // update the other player's info from the heartbeat
-      TankState *ts = (TankState *)&incomingPacket[8];		// tank data as seen on other client
-      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-      TankState *ds = &tankStates[peer];					// same tank, as we see it on this client
-      memcpy( ds, ts, sizeof(TankState) );
+//      TankState *ts = (TankState *)&incomingPacket[8];		// tank data as seen on other client
+//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
+//      TankState *ds = &tankStates[peer];					// same tank, as we see it on this client
+//      memcpy( ds, ts, sizeof(TankState) );
       
       // update heartbeat timestamp
       _lastHeartbeatDate = [NSDate date];
