@@ -171,7 +171,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	[self.skView setSpriteGroup:@"sprites"];
 	
-	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testmap5" ofType:@"json"] options:0 error:nil];
+	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"arenastyle" ofType:@"json"] options:0 error:nil];
 	NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:levelData options:0 error:nil];
 	NSDictionary *layer = [[dict valueForKey:@"layers"] objectAtIndex:0];
 	NSMutableArray *data = [[layer valueForKey:@"data"] mutableCopy];
