@@ -10,6 +10,9 @@
 		3EBA9CB114D493C90007F8EA /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBA9CB014D493C90007F8EA /* GameKit.framework */; };
 		FF11DB6F14D4C9A6007B387E /* Allegro.m4a in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB6E14D4C9A6007B387E /* Allegro.m4a */; };
 		FF11DB7414D4CA60007B387E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF11DB7314D4CA60007B387E /* AVFoundation.framework */; };
+		FF11DB8014D4D16A007B387E /* explosion.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB7E14D4D16A007B387E /* explosion.caf */; };
+		FF11DB8114D4D16A007B387E /* shot.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB7F14D4D16A007B387E /* shot.caf */; };
+		FF11DB8314D4D17B007B387E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF11DB8214D4D17B007B387E /* AudioToolbox.framework */; };
 		FF2789B914D447C700BFF611 /* Shot.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789B814D447C700BFF611 /* Shot.m */; };
 		FF2789BC14D44B9C00BFF611 /* Explosion.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789BB14D44B9C00BFF611 /* Explosion.m */; };
 		FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */ = {isa = PBXBuildFile; fileRef = FF4F619B14D4B434009A7F60 /* testmap5.json */; };
@@ -50,6 +53,9 @@
 		3EBA9CB014D493C90007F8EA /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FF11DB6E14D4C9A6007B387E /* Allegro.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Allegro.m4a; sourceTree = "<group>"; };
 		FF11DB7314D4CA60007B387E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		FF11DB7E14D4D16A007B387E /* explosion.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = explosion.caf; sourceTree = "<group>"; };
+		FF11DB7F14D4D16A007B387E /* shot.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = shot.caf; sourceTree = "<group>"; };
+		FF11DB8214D4D17B007B387E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FF2789B714D447C700BFF611 /* Shot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shot.h; sourceTree = "<group>"; };
 		FF2789B814D447C700BFF611 /* Shot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shot.m; sourceTree = "<group>"; };
 		FF2789BA14D44B9C00BFF611 /* Explosion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Explosion.h; sourceTree = "<group>"; };
@@ -107,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF11DB8314D4D17B007B387E /* AudioToolbox.framework in Frameworks */,
 				FF11DB7414D4CA60007B387E /* AVFoundation.framework in Frameworks */,
 				3EBA9CB114D493C90007F8EA /* GameKit.framework in Frameworks */,
 				FFF7A09B14D42016005D4DB4 /* CoreMotion.framework in Frameworks */,
@@ -144,6 +151,7 @@
 		FFF7A05214D40FAC005D4DB4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FF11DB8214D4D17B007B387E /* AudioToolbox.framework */,
 				FF11DB7314D4CA60007B387E /* AVFoundation.framework */,
 				3EBA9CB014D493C90007F8EA /* GameKit.framework */,
 				FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */,
@@ -183,6 +191,8 @@
 				FFE3845414D4A93300E62A2F /* arenastyle.json */,
 				FF4F619B14D4B434009A7F60 /* testmap5.json */,
 				FF11DB6E14D4C9A6007B387E /* Allegro.m4a */,
+				FF11DB7E14D4D16A007B387E /* explosion.caf */,
+				FF11DB7F14D4D16A007B387E /* shot.caf */,
 			);
 			path = TankTest;
 			sourceTree = "<group>";
@@ -288,6 +298,8 @@
 				FF5620B314D4ACFC0026233E /* Icon@2x.png in Resources */,
 				FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */,
 				FF11DB6F14D4C9A6007B387E /* Allegro.m4a in Resources */,
+				FF11DB8014D4D16A007B387E /* explosion.caf in Resources */,
+				FF11DB8114D4D16A007B387E /* shot.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,13 +388,13 @@
 		FFF7A06814D40FAC005D4DB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Willi Wu (P5EC6B73UQ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ulrik Damm (X45AYMDB46)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TankTest/TankTest-Prefix.pch";
 				INFOPLIST_FILE = "TankTest/TankTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "39F7E536-D24A-44DC-AF08-01AFBFA58783";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81E664AA-341E-4B4E-8CC5-0CB2529339FD";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;

@@ -19,7 +19,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <GameKit/GameKit.h>
 #import <AVFoundation/AVFoundation.h>
-
+#import <AudioToolbox/AudioToolbox.h>
 
 typedef enum {
 	GameStateStartGame,
@@ -47,6 +47,9 @@ typedef enum {
 } PacketCodes;
 
 
+SystemSoundID shot;
+SystemSoundID explosionsound;
+
 
 #define kTankSessionID @"hitlerTank"
 
@@ -71,6 +74,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (assign, nonatomic) CGSize mapSize;
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
+@property (strong, nonatomic) AVAudioPlayer *player;
 
 
 @property(nonatomic) GameStates gameState;
@@ -119,6 +123,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @synthesize mapSize;
 @synthesize tanks;
 @synthesize pickups;
+@synthesize player;
 
 @synthesize gameState = _gameState;
 @synthesize gameSession = _gameSession;
@@ -147,10 +152,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
   
   _gameState = GameStateStartGame;
   
+	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"shot" ofType:@"caf"]], &shot);
+	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
   
   [self startPicker];
-  
-  
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -342,6 +347,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
   }
   
 	[self shootFromTank:self.tank];
+	
+	AudioServicesPlaySystemSound(shot);
 }
 
 - (Shot*)shootFromTank:(Tank*)t {
@@ -386,6 +393,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self.shots removeObject:shot];
 	[self.spritesToChange addObject:shot];
 	
+	AudioServicesPlaySystemSound(explosionsound);
+	
 	void (^expl)(CGPoint pos) = ^(CGPoint pos) {
 		Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
 		exp.position = pos;
@@ -428,6 +437,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	tank_.health--;
 	
+	AudioServicesPlaySystemSound(explosionsound);
+	
 	Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
 	exp.position = shot.position;
 	exp.size = CGSizeMake(64, 64);
@@ -460,6 +471,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		expl(CGPointMake(pos.x + 16, pos.y - 16));
 		expl(CGPointMake(pos.x + 16, pos.y + 16));
 		expl(CGPointMake(pos.x, pos.y));
+		
+		AudioServicesPlaySystemSound(explosionsound);
+		AudioServicesPlaySystemSound(explosionsound);
+		AudioServicesPlaySystemSound(explosionsound);
+		AudioServicesPlaySystemSound(explosionsound);
 		
     // Enemy dead. Teleport
     tank_.position = CGPointMake(1024, 1024);
@@ -576,8 +592,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;
 	
-	NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
-	AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:data error:nil];
+	NSData *data2 = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
+	self.player = [[AVAudioPlayer alloc] initWithData:data2 error:nil];
 	[player play];
 }
 

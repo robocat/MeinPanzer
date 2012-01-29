@@ -8,6 +8,12 @@
 
 #import "Tank.h"
 
+@interface Tank ()
+
+@property (strong, nonatomic) SKSprite *healthbar;
+
+@end
+
 @implementation Tank
 
 @synthesize speed;
@@ -18,10 +24,21 @@
 @synthesize delegate;
 @synthesize level;
 @synthesize health;
+@synthesize healthbar;
 
 - (id)initWithTexture:(SKTexture *)texture shader:(SKShader *)shader {
 	if (self = [super initWithTexture:texture shader:shader]) {
 		health = 10;
+		
+		self.healthbar = [[SKSprite alloc] initWithTexture:texture shader:shader];
+		healthbar.textureClip = CGRectMake(4 * 64, 64, 1, 5);
+		healthbar.size = CGSizeMake(32, 5);
+		healthbar.position = CGPointMake(self.position.x + 32, self.position.y + 16);
+		healthbar.anchor = CGPointMake(-32, -2);
+		healthbar.alpha = YES;
+		healthbar.zpos = 10;
+		
+		[self.subsprites addObject:healthbar];
 	}
 	
 	return self;
@@ -55,6 +72,9 @@
 end:
 	
 	[self.delegate tankMoved:self];
+	
+	self.healthbar.size = CGSizeMake((CGFloat)health * 3.2, 5);
+	self.healthbar.position = CGPointMake(self.position.x + 32, self.position.y + 16);
 	
 	return YES;
 }
