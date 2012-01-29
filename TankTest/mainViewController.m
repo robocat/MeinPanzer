@@ -43,13 +43,8 @@ typedef enum {
 	NETWORK_FIRE_EVENT,				// send fire
 	NETWORK_TELEPORT_EVENT,				// Dead, teleport
 	NETWORK_HEARTBEAT,				// send of entire state at regular intervals
-<<<<<<< HEAD
 	NETWORK_PICKUP,
 	NETWORK_HIT_TANK_EVENT,
-=======
-  NETWORK_PICKUP,
-  NETWORK_HIT_TANK_EVENT,
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 } PacketCodes;
 
 
@@ -81,8 +76,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
 @property (strong, nonatomic) AVAudioPlayer *player;
-
-@property (strong, nonatomic) UIAlertView *connectionAlert;
 
 @property (strong, nonatomic) UIAlertView *connectionAlert;
 
@@ -150,7 +143,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-<<<<<<< HEAD
 	
 	// Game Session
 	_peerStatus = kServer;
@@ -169,24 +161,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
 	
 	[self startPicker];
-=======
-  
-  // Game Session
-  _peerStatus = kServer;
-  gamePacketNumber = 0;
-  _gameSession = nil;
-  _gamePeerId = nil;
-  _lastHeartbeatDate = nil;
-  
-  
-  NSString *uid = [[UIDevice currentDevice] uniqueIdentifier];
-  _gameUniqueID = [uid hash];
-  
-  _gameState = GameStateStartGame;
-  
-  
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -293,27 +267,16 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-<<<<<<< HEAD
 	
-=======
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 }
 
 
 - (void)viewDidAppear:(BOOL)animated
 {
-<<<<<<< HEAD
 	[super viewDidAppear:animated];
 	
 	[self startPicker];
 	
-=======
-  [super viewDidAppear:animated];
-  
-  [self startPicker];
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 }
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
@@ -363,24 +326,14 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 					_lastHeartbeatDate = [NSDate date];
 				}
 				else if(fabs([self.lastHeartbeatDate timeIntervalSinceNow]) >= kHeartbeatTimeMaxDelay) {
-<<<<<<< HEAD
 					// see if the last heartbeat is too old
 					// seems we've lost connection, notify user that we are trying to reconnect (until GKSession actually disconnects)
 					
-=======
-          // see if the last heartbeat is too old
-          // seems we've lost connection, notify user that we are trying to reconnect (until GKSession actually disconnects)
-          
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
 					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
 					self.connectionAlert = alert;
 					[alert show];
-<<<<<<< HEAD
 					
-=======
-          
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 					self.gameState = GameStateMultiplayerReconnect;
 				}
 				
@@ -498,13 +451,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self.spritesToChange addObject:shot];
 	
 	tank_.health--;
-<<<<<<< HEAD
 	[self sendNetworkPacket:_gameSession packetID:NETWORK_HIT_TANK_EVENT withData:nil ofLength:0 reliable: NO];
 	
 	AudioServicesPlaySystemSound(explosionsound);
-=======
-  [self sendNetworkPacket:_gameSession packetID:NETWORK_HIT_TANK_EVENT withData:nil ofLength:0 reliable: NO];
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	
 	Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
 	exp.position = shot.position;
@@ -539,15 +488,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		expl(CGPointMake(pos.x + 16, pos.y + 16));
 		expl(CGPointMake(pos.x, pos.y));
 		
-<<<<<<< HEAD
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		
-=======
-    		
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 		Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
 		hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
 		hitlerkage.size = CGSizeMake(64, 64);
@@ -557,7 +502,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		
 		[self.pickups addObject:hitlerkage];
 		[self.spritesToChange addObject:hitlerkage];
-<<<<<<< HEAD
 		
 		
 		// Enemy dead. Teleport
@@ -567,17 +511,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		
 		TankState ts = tank_.state;
 		[self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
-=======
-    
-    
-    // Enemy dead. Teleport
-    tank_.position = CGPointMake(1024, 1024);
-    tank_.health = 10;
-    tank_.level = 0;
-    
-    TankState ts = tank_.state;
-    [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	}
 }
 
@@ -609,11 +542,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-<<<<<<< HEAD
 	
-=======
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
 }
 
@@ -667,8 +596,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)peerPickerController:(GKPeerPickerController *)picker didConnectPeer:(NSString *)peerID toSession:(GKSession *)session { 
 	// Remember the current peer.
 	self.gamePeerId = peerID;
-  
-  NSLog(@"name %@", [session displayNameForPeer:peerID]);
 	
 	NSLog(@"name %@", [session displayNameForPeer:peerID]);
 	
@@ -680,18 +607,14 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	// Done with the Peer Picker
 	[picker dismiss];
 	picker.delegate = nil;
-  
+	
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;
 	
 	NSData *data2 = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
 	self.player = [[AVAudioPlayer alloc] initWithData:data2 error:nil];
 	[player play];
-<<<<<<< HEAD
 	
-=======
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 }
 
 
@@ -821,7 +744,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			self.tank.level = 0;
 		}
 			break;
-<<<<<<< HEAD
 		case NETWORK_HEARTBEAT:
 		{
 			// Received heartbeat data with other player's position, destination, and firing status.
@@ -843,29 +765,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 				_gameState = GameStateMultiplayer;
 			}
 		}
-=======
-    case NETWORK_HEARTBEAT:
-    {
-      // Received heartbeat data with other player's position, destination, and firing status.
-      
-      // update the other player's info from the heartbeat
-//      TankState *ts = (TankState *)&incomingPacket[8];		// tank data as seen on other client
-//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-//      TankState *ds = &tankStates[peer];					// same tank, as we see it on this client
-//      memcpy( ds, ts, sizeof(TankState) );
-      
-      // update heartbeat timestamp
-      _lastHeartbeatDate = [NSDate date];
-      
-      // if we were trying to reconnect, set the state back to multiplayer as the peer is back
-      if(self.gameState == GameStateMultiplayerReconnect) {
-        if(self.connectionAlert && self.connectionAlert.visible) {
-          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
-        }
-        _gameState = GameStateMultiplayer;
-      }
-    }
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 			break;
 		case NETWORK_PICKUP:
 		{
@@ -896,11 +795,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		{
 			self.tank.health--;
 		}
-			break;
-    case NETWORK_HIT_TANK_EVENT:
-    {
-      self.tank.health--;
-    }
 			break;
 		default:
 			// error
