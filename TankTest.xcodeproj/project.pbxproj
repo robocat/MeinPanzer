@@ -10,19 +10,19 @@
 		3EBA9CB114D493C90007F8EA /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBA9CB014D493C90007F8EA /* GameKit.framework */; };
 		FF11DB6F14D4C9A6007B387E /* Allegro.m4a in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB6E14D4C9A6007B387E /* Allegro.m4a */; };
 		FF11DB7414D4CA60007B387E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF11DB7314D4CA60007B387E /* AVFoundation.framework */; };
-		FF11DB8014D4D16A007B387E /* explosion.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB7E14D4D16A007B387E /* explosion.caf */; };
 		FF11DB8114D4D16A007B387E /* shot.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF11DB7F14D4D16A007B387E /* shot.caf */; };
 		FF11DB8314D4D17B007B387E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF11DB8214D4D17B007B387E /* AudioToolbox.framework */; };
 		FF2789B914D447C700BFF611 /* Shot.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789B814D447C700BFF611 /* Shot.m */; };
 		FF2789BC14D44B9C00BFF611 /* Explosion.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2789BB14D44B9C00BFF611 /* Explosion.m */; };
 		FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */ = {isa = PBXBuildFile; fileRef = FF4F619B14D4B434009A7F60 /* testmap5.json */; };
+		FF5255A814D5291700D62C35 /* pixelsix14.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF5255A614D5290D00D62C35 /* pixelsix14.ttf */; };
 		FF5620B114D4ACF70026233E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FF5620B014D4ACF70026233E /* Icon.png */; };
 		FF5620B314D4ACFC0026233E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FF5620B214D4ACFC0026233E /* Icon@2x.png */; };
+		FF60ACE214D531360024975C /* upgrade.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF60ACE014D5312A0024975C /* upgrade.caf */; };
 		FF66C28214D4236B0067D377 /* Tank.m in Sources */ = {isa = PBXBuildFile; fileRef = FF66C28114D4236B0067D377 /* Tank.m */; };
 		FF66C28414D42ECE0067D377 /* tilemap.json in Resources */ = {isa = PBXBuildFile; fileRef = FF66C28314D42ECE0067D377 /* tilemap.json */; };
 		FF66C28614D430310067D377 /* tileset6.png in Resources */ = {isa = PBXBuildFile; fileRef = FF66C28514D430310067D377 /* tileset6.png */; };
 		FFE3844514D482F800E62A2F /* Pickup.m in Sources */ = {isa = PBXBuildFile; fileRef = FFE3844414D482F800E62A2F /* Pickup.m */; };
-		FFE3844C14D4A28200E62A2F /* meinpanzer_start.png in Resources */ = {isa = PBXBuildFile; fileRef = FFE3844B14D4A28200E62A2F /* meinpanzer_start.png */; };
 		FFE3844F14D4A28A00E62A2F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FFE3844E14D4A28A00E62A2F /* Default.png */; };
 		FFE3845114D4A73700E62A2F /* tilesettest5.png in Resources */ = {isa = PBXBuildFile; fileRef = FFE3845014D4A73700E62A2F /* tilesettest5.png */; };
 		FFE3845514D4A93300E62A2F /* arenastyle.json in Resources */ = {isa = PBXBuildFile; fileRef = FFE3845414D4A93300E62A2F /* arenastyle.json */; };
@@ -47,13 +47,13 @@
 		FFF7A09614D41361005D4DB4 /* fragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A07814D41019005D4DB4 /* fragmentShader.glsl */; };
 		FFF7A09714D41364005D4DB4 /* vertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = FFF7A07714D41019005D4DB4 /* vertexShader.glsl */; };
 		FFF7A09B14D42016005D4DB4 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */; };
+		FFFE486914D4FE250074E6D6 /* explosionloud.caf in Resources */ = {isa = PBXBuildFile; fileRef = FFFE486714D4FE1A0074E6D6 /* explosionloud.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3EBA9CB014D493C90007F8EA /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FF11DB6E14D4C9A6007B387E /* Allegro.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Allegro.m4a; sourceTree = "<group>"; };
 		FF11DB7314D4CA60007B387E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		FF11DB7E14D4D16A007B387E /* explosion.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = explosion.caf; sourceTree = "<group>"; };
 		FF11DB7F14D4D16A007B387E /* shot.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = shot.caf; sourceTree = "<group>"; };
 		FF11DB8214D4D17B007B387E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FF2789B714D447C700BFF611 /* Shot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shot.h; sourceTree = "<group>"; };
@@ -61,15 +61,16 @@
 		FF2789BA14D44B9C00BFF611 /* Explosion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Explosion.h; sourceTree = "<group>"; };
 		FF2789BB14D44B9C00BFF611 /* Explosion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Explosion.m; sourceTree = "<group>"; };
 		FF4F619B14D4B434009A7F60 /* testmap5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testmap5.json; sourceTree = "<group>"; };
+		FF5255A614D5290D00D62C35 /* pixelsix14.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = pixelsix14.ttf; sourceTree = "<group>"; };
 		FF5620B014D4ACF70026233E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		FF5620B214D4ACFC0026233E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		FF60ACE014D5312A0024975C /* upgrade.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = upgrade.caf; sourceTree = "<group>"; };
 		FF66C28014D4236B0067D377 /* Tank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tank.h; sourceTree = "<group>"; };
 		FF66C28114D4236B0067D377 /* Tank.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tank.m; sourceTree = "<group>"; };
 		FF66C28314D42ECE0067D377 /* tilemap.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = tilemap.json; sourceTree = "<group>"; };
 		FF66C28514D430310067D377 /* tileset6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tileset6.png; sourceTree = "<group>"; };
 		FFE3844314D482F800E62A2F /* Pickup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pickup.h; sourceTree = "<group>"; };
 		FFE3844414D482F800E62A2F /* Pickup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pickup.m; sourceTree = "<group>"; };
-		FFE3844B14D4A28200E62A2F /* meinpanzer_start.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = meinpanzer_start.png; sourceTree = "<group>"; };
 		FFE3844E14D4A28A00E62A2F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		FFE3845014D4A73700E62A2F /* tilesettest5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tilesettest5.png; sourceTree = "<group>"; };
 		FFE3845414D4A93300E62A2F /* arenastyle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = arenastyle.json; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		FFF7A08C14D41266005D4DB4 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		FFF7A08E14D41269005D4DB4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FFF7A09A14D42016005D4DB4 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		FFFE486714D4FE1A0074E6D6 /* explosionloud.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = explosionloud.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,12 +189,13 @@
 				FFE3844314D482F800E62A2F /* Pickup.h */,
 				FFE3844414D482F800E62A2F /* Pickup.m */,
 				FFE3845014D4A73700E62A2F /* tilesettest5.png */,
-				FFE3844B14D4A28200E62A2F /* meinpanzer_start.png */,
 				FFE3845414D4A93300E62A2F /* arenastyle.json */,
 				FF4F619B14D4B434009A7F60 /* testmap5.json */,
 				FF11DB6E14D4C9A6007B387E /* Allegro.m4a */,
-				FF11DB7E14D4D16A007B387E /* explosion.caf */,
+				FFFE486714D4FE1A0074E6D6 /* explosionloud.caf */,
 				FF11DB7F14D4D16A007B387E /* shot.caf */,
+				FF5255A614D5290D00D62C35 /* pixelsix14.ttf */,
+				FF60ACE014D5312A0024975C /* upgrade.caf */,
 			);
 			path = TankTest;
 			sourceTree = "<group>";
@@ -290,15 +293,16 @@
 				FF66C28414D42ECE0067D377 /* tilemap.json in Resources */,
 				FF66C28614D430310067D377 /* tileset6.png in Resources */,
 				FFE415A814D4383100EE9710 /* testmap40x40.json in Resources */,
-				FFE3844C14D4A28200E62A2F /* meinpanzer_start.png in Resources */,
 				FFE3844F14D4A28A00E62A2F /* Default.png in Resources */,
 				FFE3845114D4A73700E62A2F /* tilesettest5.png in Resources */,
 				FFE3845514D4A93300E62A2F /* arenastyle.json in Resources */,
 				FF5620B114D4ACF70026233E /* Icon.png in Resources */,
 				FF5620B314D4ACFC0026233E /* Icon@2x.png in Resources */,
+				FF60ACE214D531360024975C /* upgrade.caf in Resources */,
 				FF4F619C14D4B434009A7F60 /* testmap5.json in Resources */,
 				FF11DB6F14D4C9A6007B387E /* Allegro.m4a in Resources */,
-				FF11DB8014D4D16A007B387E /* explosion.caf in Resources */,
+				FF5255A814D5291700D62C35 /* pixelsix14.ttf in Resources */,
+				FFFE486914D4FE250074E6D6 /* explosionloud.caf in Resources */,
 				FF11DB8114D4D16A007B387E /* shot.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

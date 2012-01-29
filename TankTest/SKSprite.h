@@ -24,9 +24,11 @@
 @property (strong, nonatomic) NSMutableArray *subsprites;
 @property (assign, nonatomic) BOOL visible;
 @property (assign, nonatomic) GLfloat rotation;
+@property (assign, nonatomic) BOOL active;
 
 - (id)initWithTexture:(SKTexture*)texture shader:(SKShader*)shader;
 - (void)draw;
 - (BOOL)update;
+- (BOOL)updateStep;
 
 @end

@@ -21,6 +21,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#define kSpawnX 704
+#define kSpawnY 704
+
+
 typedef enum {
 	GameStateStartGame,
 	GameStatePicker,
@@ -45,11 +49,16 @@ typedef enum {
 	NETWORK_HEARTBEAT,				// send of entire state at regular intervals
 	NETWORK_PICKUP,
 	NETWORK_HIT_TANK_EVENT,
+	NETWORK_PLAYER_ZONED,
+	NETWORK_PLAYER_ZONED_HALF,
+	NETWORK_PLAYER_ZONED_DONE,
+	NETWORK_GAME_RESET,
 } PacketCodes;
 
 
 SystemSoundID shot;
 SystemSoundID explosionsound;
+SystemSoundID upgradesound;
 
 
 #define kTankSessionID @"hitlerTank"
@@ -76,7 +85,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
 @property (strong, nonatomic) AVAudioPlayer *player;
-
+@property (strong, nonatomic) NSMutableArray *messages;
 @property (strong, nonatomic) UIAlertView *connectionAlert;
 
 
@@ -90,7 +99,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (nonatomic) NSInteger gameUniqueID;
 
 
-
+- (void)showMessage:(NSString*)text;
 
 - (Shot*)shootFromTank:(Tank*)t;
 
@@ -127,7 +136,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @synthesize tanks;
 @synthesize pickups;
 @synthesize player;
-
+@synthesize messages;
 @synthesize gameState = _gameState;
 @synthesize gameSession = _gameSession;
 
@@ -158,7 +167,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	_gameState = GameStateStartGame;
 	
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"shot" ofType:@"caf"]], &shot);
-	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
+	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosionloud" ofType:@"caf"]], &explosionsound);
+	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"upgrade" ofType:@"caf"]], &upgradesound);
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -180,7 +190,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	[self.skView setSpriteGroup:@"sprites"];
 	
-	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"arenastyle" ofType:@"json"] options:0 error:nil];
+	NSData *levelData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testmap5" ofType:@"json"] options:0 error:nil];
 	NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:levelData options:0 error:nil];
 	NSDictionary *layer = [[dict valueForKey:@"layers"] objectAtIndex:0];
 	NSMutableArray *data = [[layer valueForKey:@"data"] mutableCopy];
@@ -213,7 +223,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	}
 	
 	self.tank = [[Tank alloc] initWithTexture:self.texture shader:self.shader];
-	self.tank.position = CGPointMake(1024, 1024);
+	self.tank.position = CGPointMake(kSpawnX, kSpawnY);
 	self.tank.size = CGSizeMake(64, 64);
 	self.tank.textureClip = CGRectMake(64 * 2, 0, 64, 64);
 	self.tank.anchor = CGPointMake(-32, -32);
@@ -239,6 +249,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	self.spritesToChange = [NSMutableArray array];
 	self.tanks = [NSMutableArray array];
 	self.pickups = [NSMutableArray array];
+	self.messages = [NSMutableArray array];
 	
 	void (^addEnemy)(CGPoint pos) = ^(CGPoint pos) {
 		Tank *enemy = [[Tank alloc] initWithTexture:self.texture shader:self.shader];
@@ -253,15 +264,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	};
 	
 	addEnemy(CGPointMake(256, 256 + 64 * 0));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 1));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 2));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 3));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 4));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 5));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 6));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 7));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 8));
-	//	addEnemy(CGPointMake(256, 256 + 64 * 9));
 	
 	CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -280,7 +282,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
 	self.tank.rotation += acceleration.y / 4;
 	self.tank.speed = -acceleration.z * 2;
-	
 	
 	if (_gameState == GameStateMultiplayer) {
 		TankState ts = self.tank.state;
@@ -303,6 +304,12 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		case GameStateMultiplayer:
 			
 			self.skView.viewpos = CGPointMake(self.tank.position.x - 192, self.tank.position.y - 128);
+			
+			int i;
+			for (i = 0; i < [self.messages count]; i++) {
+				SKSprite *message = [self.messages objectAtIndex:i];
+				message.position = CGPointMake(self.skView.viewpos.x, self.skView.viewpos.y + 320 - (i + 1) * 26);
+			}
 			
 			[self.skView render];
 			
@@ -465,6 +472,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self.spritesToChange addObject:exp];
 	
 	if (tank_.health <= 0) {
+		[self showMessage:@"Enemy was destroyed"];
+		
 		void (^expl)(CGPoint pos) = ^(CGPoint pos) {
 			Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
 			exp.position = pos;
@@ -503,8 +512,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		
 		
 		// Enemy dead. Teleport
-		tank_.position = CGPointMake(1024, 1024);
-		tank_.health = 10;
+		tank_.position = CGPointMake(kSpawnX, kSpawnY);
 		tank_.level = 0;
 		
 		TankState ts = tank_.state;
@@ -517,7 +525,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	for (i = 0; i < [self.pickups count]; i++) {
 		Pickup *p = [self.pickups objectAtIndex:i];
 		
-		if (pow(p.position.x - tank_.position.x, 2) + pow(p.position.y - tank_.position.y, 2) < pow(16, 2)) {
+		if (pow(p.position.x - tank_.position.x, 2) + pow(p.position.y - tank_.position.y, 2) < pow(24, 2)) {
 			
 			TankState ts = tank_.state;
 			[self sendNetworkPacket:_gameSession packetID:NETWORK_PICKUP withData:&ts ofLength:sizeof(TankState) reliable: NO];
@@ -525,9 +533,38 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			[self.pickups removeObject:p];
 			[self.spritesToChange addObject:p];
 			
+			AudioServicesPlaySystemSound(upgradesound);
+			
 			tank_.level++;
 			break;
 		}
+	}
+}
+
+- (void)tank:(Tank *)tank_ hasBeenInZoneFor:(int)time {
+	TankState ts = tank_.state;
+	
+	if (time == 2000) {
+		[self showMessage:@"You've won!"];
+		[self sendNetworkPacket:_gameSession packetID:NETWORK_PLAYER_ZONED_DONE withData:&ts ofLength:sizeof(TankState) reliable:NO];
+		
+		double delayInSeconds = 4.0;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			TankState ts = tank_.state;
+			[self sendNetworkPacket:_gameSession packetID:NETWORK_GAME_RESET withData:&ts ofLength:sizeof(TankState) reliable:NO];
+			
+			tank.position = CGPointMake(kSpawnX, kSpawnY);
+			tank.level = 0;
+			
+			[self showMessage:@"New game started"];
+		});
+	} else if (time == 1) {
+		[self showMessage:@"You have entered the zone"];
+		[self sendNetworkPacket:_gameSession packetID:NETWORK_PLAYER_ZONED withData:&ts ofLength:sizeof(TankState) reliable:NO];
+	} else if (time == 1000) {
+		[self showMessage:@"You have been half time in the zone"];
+		[self sendNetworkPacket:_gameSession packetID:NETWORK_PLAYER_ZONED_HALF withData:&ts ofLength:sizeof(TankState) reliable:NO];
 	}
 }
 
@@ -654,11 +691,41 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 } 
 
 
+- (void)alertViewCancel:(UIAlertView *)alertView {
+	[self startPicker];
+}
+
+
 - (CGFloat)distanceBetweenPoint:(CGPoint)a andPoint:(CGPoint)b
 {
 	CGFloat a2 = powf(a.x-b.x, 2.f);
 	CGFloat b2 = powf(a.y-b.y, 2.f);
 	return sqrtf(a2 + b2);
+}
+
+- (void)showMessage:(NSString*)text {
+	UIFont *font = [UIFont fontWithName:@"PixelSix14" size:10];
+	CGSize textSize = [text sizeWithFont:font];
+	textSize = CGSizeMake(textSize.width * 2, textSize.height * 2);
+	SKTexture *texttex = [[SKTexture alloc] initWithText:text usingFont:font];
+	
+	SKSprite *t = [[SKSprite alloc] initWithTexture:texttex shader:self.shader];
+	t.position = CGPointMake(kSpawnX, kSpawnY);
+	t.textureClip = CGRectMake(0, 0, textSize.width, textSize.height);
+	t.size = textSize;
+	t.alpha = YES;
+	t.anchor = CGPointMake(-textSize.width / 2, -textSize.height / 2);
+	t.zpos = 3;
+	
+	[self.messages addObject:t];
+	[self.spritesToChange addObject:t];
+	
+	double delayInSeconds = 5.0;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		[messages removeObject:t];
+		[self.spritesToChange addObject:t];
+	});
 }
 
 
@@ -692,17 +759,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			if(coinToss > _gameUniqueID) {
 				self.peerStatus = kClient;
 			}
-			
-			//      // notify user of tank color
-			//      self.gameLabel.text = (self.peerStatus == kServer) ? kBlueLabel : kRedLabel; // server is the blue tank, client is red
-			//      self.gameLabel.hidden = NO;
-			//      // after 1 second fire method to hide the label
-			//      [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideGameLabel:) userInfo:nil repeats:NO];
 		}
 			break;
-		case NETWORK_MOVE_EVENT:
-		{
-			// received move event from other player, update other player's position/destination info
+		case NETWORK_MOVE_EVENT: {
 			TankState *ts = (TankState *)&incomingPacket[8];
 			
 			TankState newState;
@@ -710,12 +769,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			newState.rotation = ts->rotation;
 			newState.speed = ts->speed;
 			[(Tank *)[self.tanks objectAtIndex:0] setState:newState];
-			
-		}
 			break;
-		case NETWORK_FIRE_EVENT:
-		{
-			// received a missile fire event from other player, update other player's firing status
+		}
+			
+		case NETWORK_FIRE_EVENT: {
 			TankState *ts = (TankState *)&incomingPacket[8];
 			
 			TankState newState;
@@ -727,10 +784,12 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			Shot *shot = [self shootFromTank:[self.tanks objectAtIndex:0]];
 			shot.position = newState.position;
 			shot.rotation = newState.rotation;
-		}
 			break;
-		case NETWORK_TELEPORT_EVENT:
-		{
+		}
+			
+		case NETWORK_TELEPORT_EVENT: {
+			[self showMessage:@"You was destroyed"];
+			
 			TankState *ts = (TankState *)&incomingPacket[8];
 			
 			TankState newState;
@@ -738,21 +797,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			newState.rotation = ts->rotation;
 			newState.speed = ts->speed;
 			[self.tank setState:newState];
-			self.tank.health = 10;
 			self.tank.level = 0;
-		}
 			break;
-		case NETWORK_HEARTBEAT:
-		{
-			// Received heartbeat data with other player's position, destination, and firing status.
+		}
 			
-			// update the other player's info from the heartbeat
-			//      TankState *ts = (TankState *)&incomingPacket[8];		// tank data as seen on other client
-			//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-			//      TankState *ds = &tankStates[peer];					// same tank, as we see it on this client
-			//      memcpy( ds, ts, sizeof(TankState) );
-			
-			// update heartbeat timestamp
+		case NETWORK_HEARTBEAT: {
 			_lastHeartbeatDate = [NSDate date];
 			
 			// if we were trying to reconnect, set the state back to multiplayer as the peer is back
@@ -762,10 +811,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 				}
 				_gameState = GameStateMultiplayer;
 			}
-		}
 			break;
-		case NETWORK_PICKUP:
-		{
+		}
+			
+		case NETWORK_PICKUP: {
 			TankState *ts = (TankState *)&incomingPacket[8];
 			CGPoint point = ts->position;
 			
@@ -786,11 +835,31 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 			
 			Tank *enemy = [self.tanks objectAtIndex:0];
 			enemy.level++;
-			
-		}
 			break;
-		case NETWORK_HIT_TANK_EVENT:
-		{
+		}
+			
+		case NETWORK_PLAYER_ZONED: {
+			[self showMessage:@"Enemy has entered the zone"];
+			break;
+		}
+			
+		case NETWORK_PLAYER_ZONED_HALF: {
+			[self showMessage:@"Enemy has been half time in the zone"];
+			break;
+		}
+			
+		case NETWORK_PLAYER_ZONED_DONE: {
+			[self showMessage:@"Enemy has won!"];
+			break;
+		}
+			
+		case NETWORK_GAME_RESET: {
+			[self showMessage:@"New game started"];
+			tank.position = CGPointMake(kSpawnX, kSpawnY);
+			tank.level = 0;
+		}
+			
+		case NETWORK_HIT_TANK_EVENT: {
 			self.tank.health--;
 		}
 			break;

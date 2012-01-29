@@ -23,6 +23,7 @@ typedef struct {
 @protocol TankDelegate <NSObject>
 
 - (void)tankMoved:(Tank*)tank;
+- (void)tank:(Tank*)tank hasBeenInZoneFor:(int)time;
 
 @end
 
@@ -36,6 +37,8 @@ typedef struct {
 @property (assign, nonatomic) id<TankDelegate> delegate;
 @property (assign, nonatomic) int level;
 @property (assign, nonatomic) int health;
+@property (assign, nonatomic) int maxhealth;
+@property (assign, nonatomic) int timeInZone;
 
 @property (nonatomic) TankState state;
 

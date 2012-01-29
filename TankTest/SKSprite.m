@@ -43,6 +43,7 @@ static GLushort indicies[] = {
 @synthesize subsprites;
 @synthesize visible;
 @synthesize rotation;
+@synthesize active;
 
 - (id)initWithTexture:(SKTexture*)newtexture shader:(SKShader*)newshader {
 	if ((self = [self init])) {
@@ -57,6 +58,7 @@ static GLushort indicies[] = {
 - (id)init {
 	if ((self = [super init])) {
 		self.subsprites = [NSMutableArray array];
+		self.active = YES;
 		
 		SKVertex tmpVertices[] = {
 			{{.5, -.5, 0}, {1, 1, 1, 1}, {1, 0}},
@@ -131,6 +133,8 @@ static GLushort indicies[] = {
 	if (self.alpha) {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
+	} else {
+		glDisable(GL_BLEND);
 	}
 	
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -156,6 +160,14 @@ static GLushort indicies[] = {
 	for (SKSprite *sprite in self.subsprites) {
 		[sprite draw];
 	}
+}
+
+- (BOOL)updateStep {
+	if (active) {
+		return [self update];
+	}
+	
+	return YES;
 }
 
 - (BOOL)update {

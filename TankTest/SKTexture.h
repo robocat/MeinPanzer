@@ -11,6 +11,7 @@
 @interface SKTexture : NSObject
 
 - (id)initWithImage:(UIImage*)image;
+- (id)initWithText:(NSString*)text usingFont:(UIFont*)font;
 
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) CGSize size;

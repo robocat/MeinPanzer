@@ -17,6 +17,7 @@
 @property (assign, nonatomic) CGPoint viewpos;
 
 - (void)addSprite:(SKSprite*)sprite;
+- (void)addSprite:(SKSprite*)sprite toGroup:(NSString*)group;
 - (void)removeSprite:(SKSprite*)sprite;
 - (BOOL)containsSprite:(SKSprite*)sprite;
 - (int)spriteCount;

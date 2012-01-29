@@ -88,15 +88,15 @@
 	glClearColor(.5, .5, .5, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
+	glViewport(0, 0, self.frame.size.width, self.frame.size.height);
+	
 	SKMatrix matrix = SKMatrixZero();
 	SKMatrixOrtho(&matrix, 0, self.frame.size.width, 0, self.frame.size.height, 0, 10);
 	SKMatrixTranslate(&matrix, -viewpos.x, -viewpos.y, 0);
 	glUniformMatrix4fv(shaderProjectionSlot, 1, 0, matrix.values);
 	
-	glViewport(0, 0, self.frame.size.width, self.frame.size.height);
-	
 	for (SKSprite *sprite in [self.sprites objectForKey:group]) {
-		if (![sprite update]) {
+		if (![sprite updateStep]) {
 			continue;
 		}
 		
@@ -109,9 +109,17 @@
 }
 
 - (void)addSprite:(SKSprite*)sprite {
-	[[self.sprites objectForKey:group] addObject:sprite];
+	[self addSprite:sprite toGroup:self.currentSpriteGroup];
+}
+
+- (void)addSprite:(SKSprite*)sprite toGroup:(NSString*)togroup {	
+	if ([self.sprites objectForKey:togroup] == nil) {
+		[self.sprites setObject:[NSMutableArray array] forKey:togroup];
+	}
 	
-	[[self.sprites objectForKey:group] sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	[[self.sprites objectForKey:togroup] addObject:sprite];
+	
+	[[self.sprites objectForKey:togroup] sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		if ([obj1 zpos] > [obj2 zpos]) {
 			return (NSComparisonResult)NSOrderedDescending;
 		}
