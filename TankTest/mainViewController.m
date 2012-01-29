@@ -43,7 +43,8 @@ typedef enum {
 	NETWORK_MOVE_EVENT,				// send position
 	NETWORK_FIRE_EVENT,				// send fire
   NETWORK_TELEPORT_EVENT,				// Dead, teleport
-	NETWORK_HEARTBEAT				// send of entire state at regular intervals
+	NETWORK_HEARTBEAT,				// send of entire state at regular intervals
+  NETWORK_PICKUP,
 } PacketCodes;
 
 
@@ -463,6 +464,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		
     // Enemy dead. Teleport
     tank_.position = CGPointMake(1024, 1024);
+    tank_.health = 10;
+    tank_.level = 0;
     
     TankState ts = tank_.state;
     [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
@@ -486,6 +489,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		Pickup *p = [self.pickups objectAtIndex:i];
 		
 		if (pow(p.position.x - tank_.position.x, 2) + pow(p.position.y - tank_.position.y, 2) < pow(16, 2)) {
+      
+      TankState ts = tank_.state;
+      [self sendNetworkPacket:_gameSession packetID:NETWORK_PICKUP withData:&ts ofLength:sizeof(TankState) reliable: NO];
+      
 			[self.pickups removeObject:p];
 			[self.spritesToChange addObject:p];
 			
@@ -611,6 +618,13 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 } 
 
 
+- (CGFloat)distanceBetweenPoint:(CGPoint)a andPoint:(CGPoint)b
+{
+  CGFloat a2 = powf(a.x-b.x, 2.f);
+  CGFloat b2 = powf(a.y-b.y, 2.f);
+  return sqrtf(a2 + b2);
+}
+
 
 #pragma mark Data Send/Receive Methods
 
@@ -654,13 +668,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
     {
       // received move event from other player, update other player's position/destination info
       TankState *ts = (TankState *)&incomingPacket[8];
-      
-//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-//      TankState *ds = &tankStates[peer];
-//      ds->position = ts->position;
-//      ds->rotation = ts->rotation;
-//      ds->speed = ts->speed;
-      
+
       TankState newState;
       newState.position = ts->position;
       newState.rotation = ts->rotation;
@@ -672,13 +680,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		case NETWORK_FIRE_EVENT:
     {
       // received a missile fire event from other player, update other player's firing status
-//      TankState *ts = (TankState *)&incomingPacket[8];
-//      int peer = (self.peerStatus == kServer) ? kClient : kServer;
-//      TankState *ds = &tankStates[peer];
-//      ds->tankMissile = ts->tankMissile;
-//      ds->tankMissilePosition = ts->tankMissilePosition;
-//      ds->tankMissileDirection = ts->tankMissileDirection;
-      
       TankState *ts = (TankState *)&incomingPacket[8];
       
       TankState newState;
@@ -725,6 +726,31 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 //        }
         _gameState = GameStateMultiplayer;
       }
+    }
+			break;
+    case NETWORK_PICKUP:
+    {
+      TankState *ts = (TankState *)&incomingPacket[8];
+      CGPoint point = ts->position;
+      
+      CGFloat distance = FLT_MAX;
+      Pickup *pickupTaken = nil;
+      
+      for (Pickup *pu in self.pickups) {
+        CGFloat dist = [self distanceBetweenPoint:pu.position andPoint:point];
+        
+        if (dist <= distance) {
+          pickupTaken = pu;
+          distance = dist;
+        }
+      }
+      
+      [self.pickups removeObject:pickupTaken];
+      [self.skView removeSprite:pickupTaken];
+      
+      Tank *enemy = [self.tanks objectAtIndex:0];
+      enemy.level++;
+      
     }
 			break;
 		default:
