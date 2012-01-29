@@ -106,6 +106,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
   int gamePacketNumber;
 }
 
+@synthesize bgImageView;
+
 @synthesize skView;
 @synthesize shader;
 @synthesize texture;
@@ -147,8 +149,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
   
   _gameState = GameStateStartGame;
   
-  
-  [self startPicker];
   
   
 	
@@ -257,6 +257,18 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  
+}
+
+
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  
+//  [self.view addSubview:self.bgImageView];
+  
+  [self startPicker];
+  
 }
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
@@ -507,10 +519,12 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (void)viewDidUnload {
+  [self setBgImageView:nil];
 	[super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+  
 	return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
 }
 
@@ -574,12 +588,15 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[picker dismiss];
 	picker.delegate = nil;
 	
+  [self.bgImageView removeFromSuperview];
+  
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;
 	
 	NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
 	AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:data error:nil];
 	[player play];
+  
 }
 
 
