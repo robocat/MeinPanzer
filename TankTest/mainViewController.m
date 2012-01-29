@@ -42,6 +42,7 @@ typedef enum {
 	NETWORK_COINTOSS,				// decide who is going to be the server
 	NETWORK_MOVE_EVENT,				// send position
 	NETWORK_FIRE_EVENT,				// send fire
+  NETWORK_TELEPORT_EVENT,				// Dead, teleport
 	NETWORK_HEARTBEAT				// send of entire state at regular intervals
 } PacketCodes;
 
@@ -460,9 +461,13 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		expl(CGPointMake(pos.x + 16, pos.y + 16));
 		expl(CGPointMake(pos.x, pos.y));
 		
-		[self.tanks removeObject:tank_];
-		[self.spritesToChange addObject:tank_];
-		
+    // Enemy dead. Teleport
+    tank_.position = CGPointMake(1024, 1024);
+    
+    TankState ts = tank_.state;
+    [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
+    
+    		
 		Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
 		hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
 		hitlerkage.size = CGSizeMake(64, 64);
@@ -687,7 +692,20 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       shot.rotation = newState.rotation;
     }
 			break;
-		case NETWORK_HEARTBEAT:
+		case NETWORK_TELEPORT_EVENT:
+    {
+      TankState *ts = (TankState *)&incomingPacket[8];
+      
+      TankState newState;
+      newState.position = ts->position;
+      newState.rotation = ts->rotation;
+      newState.speed = ts->speed;
+      [self.tank setState:newState];
+      self.tank.health = 10;
+      self.tank.level = 0;
+    }
+			break;
+    case NETWORK_HEARTBEAT:
     {
       // Received heartbeat data with other player's position, destination, and firing status.
       
