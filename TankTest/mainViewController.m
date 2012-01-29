@@ -16,10 +16,9 @@
 #import "Shot.h"
 #import "Explosion.h"
 #import "Pickup.h"
-
+#import <AudioToolbox/AudioToolbox.h>
 #import <GameKit/GameKit.h>
-
-
+#import <AVFoundation/AVFoundation.h>
 
 
 typedef enum {
@@ -569,6 +568,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;
+	
+	NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
+	AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:data error:nil];
+	[player play];
 }
 
 
