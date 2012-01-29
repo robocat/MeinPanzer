@@ -44,6 +44,7 @@ typedef enum {
   NETWORK_TELEPORT_EVENT,				// Dead, teleport
 	NETWORK_HEARTBEAT,				// send of entire state at regular intervals
   NETWORK_PICKUP,
+  NETWORK_HIT_TANK_EVENT,
 } PacketCodes;
 
 
@@ -75,6 +76,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
 @property (strong, nonatomic) AVAudioPlayer *player;
+
+@property (strong, nonatomic) UIAlertView *connectionAlert;
 
 
 @property(nonatomic) GameStates gameState;
@@ -134,6 +137,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 
 @synthesize gameUniqueID = _gameUniqueID;
 
+@synthesize connectionAlert = _connectionAlert;
+
 
 
 - (void)viewDidLoad {
@@ -155,7 +160,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"shot" ofType:@"caf"]], &shot);
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
   
+<<<<<<< HEAD
   [self startPicker];
+=======
+  
+>>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -262,6 +271,16 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	
 	CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  
+}
+
+
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  
+  [self startPicker];
+  
 }
 
 - (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
@@ -314,10 +333,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
           // see if the last heartbeat is too old
           // seems we've lost connection, notify user that we are trying to reconnect (until GKSession actually disconnects)
           
-//					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
-//					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
-//					self.connectionAlert = alert;
-//					[alert show];
+					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
+					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+					self.connectionAlert = alert;
+					[alert show];
           
 					self.gameState = GameStateMultiplayerReconnect;
 				}
@@ -436,6 +455,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self.spritesToChange addObject:shot];
 	
 	tank_.health--;
+  [self sendNetworkPacket:_gameSession packetID:NETWORK_HIT_TANK_EVENT withData:nil ofLength:0 reliable: NO];
 	
 	AudioServicesPlaySystemSound(explosionsound);
 	
@@ -472,6 +492,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		expl(CGPointMake(pos.x + 16, pos.y + 16));
 		expl(CGPointMake(pos.x, pos.y));
 		
+<<<<<<< HEAD
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
@@ -485,6 +506,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
     TankState ts = tank_.state;
     [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
     
+=======
+>>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
     		
 		Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
 		hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
@@ -495,6 +518,15 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		
 		[self.pickups addObject:hitlerkage];
 		[self.spritesToChange addObject:hitlerkage];
+    
+    
+    // Enemy dead. Teleport
+    tank_.position = CGPointMake(1024, 1024);
+    tank_.health = 10;
+    tank_.level = 0;
+    
+    TankState ts = tank_.state;
+    [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
 	}
 }
 
@@ -526,6 +558,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+  
 	return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
 }
 
@@ -579,6 +612,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)peerPickerController:(GKPeerPickerController *)picker didConnectPeer:(NSString *)peerID toSession:(GKSession *)session { 
 	// Remember the current peer.
 	self.gamePeerId = peerID;
+  
+  NSLog(@"name %@", [session displayNameForPeer:peerID]);
 	
 	// Make sure we have a reference to the game session and it is set up
 	self.gameSession = session;
@@ -588,13 +623,14 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	// Done with the Peer Picker
 	[picker dismiss];
 	picker.delegate = nil;
-	
+  
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;
 	
 	NSData *data2 = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Allegro" ofType:@"m4a"] options:0 error:nil];
 	self.player = [[AVAudioPlayer alloc] initWithData:data2 error:nil];
 	[player play];
+  
 }
 
 
@@ -620,16 +656,15 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	}
 	
 	if(state == GKPeerStateDisconnected) {
-//		NSString *message = [NSString stringWithFormat:@"Could not reconnect with %@.", [session displayNameForPeer:peerID]];
-//		if((self.gameState == GameStateMultiplayerReconnect) && self.connectionAlert && self.connectionAlert.visible) {
-//			self.connectionAlert.message = message;
-//		}
-//		else {
-//			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
-//			self.connectionAlert = alert;
-//			[alert show];
-//			[alert release];
-//		}
+		NSString *message = [NSString stringWithFormat:@"Could not reconnect with %@.", [session displayNameForPeer:peerID]];
+		if((self.gameState == GameStateMultiplayerReconnect) && self.connectionAlert && self.connectionAlert.visible) {
+			self.connectionAlert.message = message;
+		}
+		else {
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+			self.connectionAlert = alert;
+			[alert show];
+		}
 		
 		// go back to start mode
 		_gameState = GameStateStartGame;
@@ -740,9 +775,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       
       // if we were trying to reconnect, set the state back to multiplayer as the peer is back
       if(self.gameState == GameStateMultiplayerReconnect) {
-//        if(self.connectionAlert && self.connectionAlert.visible) {
-//          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
-//        }
+        if(self.connectionAlert && self.connectionAlert.visible) {
+          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
+        }
         _gameState = GameStateMultiplayer;
       }
     }
@@ -770,6 +805,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       Tank *enemy = [self.tanks objectAtIndex:0];
       enemy.level++;
       
+    }
+			break;
+    case NETWORK_HIT_TANK_EVENT:
+    {
+      self.tank.health--;
     }
 			break;
 		default:
