@@ -160,11 +160,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"shot" ofType:@"caf"]], &shot);
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
   
-<<<<<<< HEAD
   [self startPicker];
-=======
-  
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
 	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
@@ -492,22 +488,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 		expl(CGPointMake(pos.x + 16, pos.y + 16));
 		expl(CGPointMake(pos.x, pos.y));
 		
-<<<<<<< HEAD
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
 		AudioServicesPlaySystemSound(explosionsound);
-		
-    // Enemy dead. Teleport
-    tank_.position = CGPointMake(1024, 1024);
-    tank_.health = 10;
-    tank_.level = 0;
     
-    TankState ts = tank_.state;
-    [self sendNetworkPacket:_gameSession packetID:NETWORK_TELEPORT_EVENT withData:&ts ofLength:sizeof(TankState) reliable: NO];
-    
-=======
->>>>>>> 74be9dbf6a63a35f18546fac2acaa7e64915ef8a
     		
 		Pickup *hitlerkage = [[Pickup alloc] initWithTexture:self.texture shader:self.shader];
 		hitlerkage.textureClip = CGRectMake(64 * 3, 64, 64, 64);
