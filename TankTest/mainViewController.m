@@ -44,6 +44,7 @@ typedef enum {
   NETWORK_TELEPORT_EVENT,				// Dead, teleport
 	NETWORK_HEARTBEAT,				// send of entire state at regular intervals
   NETWORK_PICKUP,
+  NETWORK_HIT_TANK_EVENT,
 } PacketCodes;
 
 
@@ -71,6 +72,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @property (assign, nonatomic) CGSize mapSize;
 @property (strong, nonatomic) NSMutableArray *tanks;
 @property (strong, nonatomic) NSMutableArray *pickups;
+
+@property (strong, nonatomic) UIAlertView *connectionAlert;
 
 
 @property(nonatomic) GameStates gameState;
@@ -128,6 +131,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 @synthesize lastHeartbeatDate = _lastHeartbeatDate;
 
 @synthesize gameUniqueID = _gameUniqueID;
+
+@synthesize connectionAlert = _connectionAlert;
 
 
 
@@ -317,10 +322,10 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
           // see if the last heartbeat is too old
           // seems we've lost connection, notify user that we are trying to reconnect (until GKSession actually disconnects)
           
-//					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
-//					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
-//					self.connectionAlert = alert;
-//					[alert show];
+					NSString *message = [NSString stringWithFormat:@"Trying to reconnect...\nMake sure you are within range of %@.", [self.gameSession displayNameForPeer:self.gamePeerId]];
+					UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+					self.connectionAlert = alert;
+					[alert show];
           
 					self.gameState = GameStateMultiplayerReconnect;
 				}
@@ -435,6 +440,7 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	[self.spritesToChange addObject:shot];
 	
 	tank_.health--;
+  [self sendNetworkPacket:_gameSession packetID:NETWORK_HIT_TANK_EVENT withData:nil ofLength:0 reliable: NO];
 	
 	Explosion *exp = [[Explosion alloc] initWithTexture:self.texture shader:self.shader];
 	exp.position = shot.position;
@@ -617,16 +623,15 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	}
 	
 	if(state == GKPeerStateDisconnected) {
-//		NSString *message = [NSString stringWithFormat:@"Could not reconnect with %@.", [session displayNameForPeer:peerID]];
-//		if((self.gameState == GameStateMultiplayerReconnect) && self.connectionAlert && self.connectionAlert.visible) {
-//			self.connectionAlert.message = message;
-//		}
-//		else {
-//			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
-//			self.connectionAlert = alert;
-//			[alert show];
-//			[alert release];
-//		}
+		NSString *message = [NSString stringWithFormat:@"Could not reconnect with %@.", [session displayNameForPeer:peerID]];
+		if((self.gameState == GameStateMultiplayerReconnect) && self.connectionAlert && self.connectionAlert.visible) {
+			self.connectionAlert.message = message;
+		}
+		else {
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost Connection" message:message delegate:self cancelButtonTitle:@"End Game" otherButtonTitles:nil];
+			self.connectionAlert = alert;
+			[alert show];
+		}
 		
 		// go back to start mode
 		_gameState = GameStateStartGame;
@@ -737,9 +742,9 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       
       // if we were trying to reconnect, set the state back to multiplayer as the peer is back
       if(self.gameState == GameStateMultiplayerReconnect) {
-//        if(self.connectionAlert && self.connectionAlert.visible) {
-//          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
-//        }
+        if(self.connectionAlert && self.connectionAlert.visible) {
+          [self.connectionAlert dismissWithClickedButtonIndex:-1 animated:YES];
+        }
         _gameState = GameStateMultiplayer;
       }
     }
@@ -767,6 +772,11 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
       Tank *enemy = [self.tanks objectAtIndex:0];
       enemy.level++;
       
+    }
+			break;
+    case NETWORK_HIT_TANK_EVENT:
+    {
+      self.tank.health--;
     }
 			break;
 		default:
