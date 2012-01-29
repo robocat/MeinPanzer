@@ -106,8 +106,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
   int gamePacketNumber;
 }
 
-@synthesize bgImageView;
-
 @synthesize skView;
 @synthesize shader;
 @synthesize texture;
@@ -264,8 +262,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  
-//  [self.view addSubview:self.bgImageView];
   
   [self startPicker];
   
@@ -519,7 +515,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 }
 
 - (void)viewDidUnload {
-  [self setBgImageView:nil];
 	[super viewDidUnload];
 }
 
@@ -578,6 +573,8 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 - (void)peerPickerController:(GKPeerPickerController *)picker didConnectPeer:(NSString *)peerID toSession:(GKSession *)session { 
 	// Remember the current peer.
 	self.gamePeerId = peerID;
+  
+  NSLog(@"name %@", [session displayNameForPeer:peerID]);
 	
 	// Make sure we have a reference to the game session and it is set up
 	self.gameSession = session;
@@ -587,8 +584,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	// Done with the Peer Picker
 	[picker dismiss];
 	picker.delegate = nil;
-	
-  [self.bgImageView removeFromSuperview];
   
 	// Start Multiplayer game by entering a cointoss state to determine who is server/client.
 	self.gameState = GameStateMultiplayerCointoss;

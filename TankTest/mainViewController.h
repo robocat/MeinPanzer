@@ -12,8 +12,6 @@
 
 @interface mainViewController : UIViewController <ShotDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
-
 - (SKSprite*)objectAt:(CGPoint)point;
 
 @end
