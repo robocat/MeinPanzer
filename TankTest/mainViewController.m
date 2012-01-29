@@ -160,8 +160,6 @@ const float kHeartbeatTimeMaxDelay = 2.0f;
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"shot" ofType:@"caf"]], &shot);
 	AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"explosion" ofType:@"caf"]], &explosionsound);
 	
-	[self startPicker];
-	
 	self.skView = [[SKView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.skView];
 	
