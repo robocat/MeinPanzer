@@ -368,13 +368,13 @@
 		FFF7A06814D40FAC005D4DB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ulrik Damm (X45AYMDB46)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Willi Wu (P5EC6B73UQ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TankTest/TankTest-Prefix.pch";
 				INFOPLIST_FILE = "TankTest/TankTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "81E664AA-341E-4B4E-8CC5-0CB2529339FD";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "39F7E536-D24A-44DC-AF08-01AFBFA58783";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
