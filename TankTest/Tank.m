@@ -60,6 +60,10 @@ end:
 }
 
 - (void)setLevel:(int)_level {
+	if (_level > 5) {
+		_level = 5;
+	}
+	
 	level = _level;
 	
 	if (level == 0) {
